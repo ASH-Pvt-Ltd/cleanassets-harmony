@@ -13,31 +13,36 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const { login, user } = useAuth();
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
 
   // Redirect if already logged in
   if (user) {
     return <Navigate to="/dashboard" replace />;
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
     
     // Show loading toast
     const loadingToast = toast.loading('Signing in...');
     
     try {
-      if (login(id, password)) {
-        toast.dismiss(loadingToast);
+      const success = await login(id, password);
+      toast.dismiss(loadingToast);
+      
+      if (success) {
         toast.success('Login successful');
         navigate('/dashboard', { replace: true });
       } else {
-        toast.dismiss(loadingToast);
         toast.error('Invalid credentials. Please check your ID and password.');
       }
     } catch (error) {
       toast.dismiss(loadingToast);
       toast.error('An error occurred. Please try again.');
       console.error('Login error:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -124,6 +129,7 @@ const Login = () => {
                   value={id}
                   onChange={(e) => setId(e.target.value)}
                   required
+                  disabled={isLoading}
                   className="bg-white/50 transition-colors focus:bg-white"
                 />
               </div>
@@ -135,11 +141,16 @@ const Login = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
+                  disabled={isLoading}
                   className="bg-white/50 transition-colors focus:bg-white"
                 />
               </div>
-              <Button type="submit" className="w-full transition-transform hover:scale-[1.02]">
-                Sign In
+              <Button 
+                type="submit" 
+                className="w-full transition-transform hover:scale-[1.02]"
+                disabled={isLoading}
+              >
+                {isLoading ? 'Signing in...' : 'Sign In'}
               </Button>
             </form>
           </CardContent>
