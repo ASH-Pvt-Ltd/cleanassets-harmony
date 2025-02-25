@@ -1,4 +1,3 @@
-
 import { Building2, ClipboardCheck, Truck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,6 +9,7 @@ import {
 } from "@/components/ui/card";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
+import Map from "@/components/Map";
 
 const Index = () => {
   const assetCategories = [
@@ -87,6 +87,23 @@ const Index = () => {
                 </CardContent>
               </Card>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Map Section */}
+      <section className="py-20 bg-secondary/50">
+        <div className="container px-4">
+          <div className="text-center max-w-2xl mx-auto mb-12">
+            <h2 className="text-3xl font-bold mb-4">Asset Distribution Map</h2>
+            <p className="text-muted-foreground">
+              Explore waste management assets across Goa
+            </p>
+          </div>
+          <Map />
+          <div className="mt-8 text-center text-sm text-muted-foreground">
+            <p>Interactive map showing the distribution of waste management assets across Goa.</p>
+            <p>Click on markers to view detailed information about each asset.</p>
           </div>
         </div>
       </section>
