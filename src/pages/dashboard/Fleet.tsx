@@ -1,11 +1,10 @@
-
 import React from 'react';
 import DashboardLayout from '@/components/dashboard/DashboardLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
   Truck, Car, Bus, AlertCircle, Settings, 
-  Calendar, MapPin, Fuel, Tool
+  Calendar, MapPin, Fuel, Wrench
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
@@ -135,7 +134,7 @@ const Fleet = () => {
                           75% Fuel
                         </div>
                         <div className="flex items-center gap-2">
-                          <Tool className="h-4 w-4 text-muted-foreground" />
+                          <Wrench className="h-4 w-4 text-muted-foreground" />
                           Due in 15 days
                         </div>
                         <div className="flex items-center gap-2">
@@ -179,7 +178,7 @@ const Fleet = () => {
                           60% Fuel
                         </div>
                         <div className="flex items-center gap-2">
-                          <Tool className="h-4 w-4 text-muted-foreground" />
+                          <Wrench className="h-4 w-4 text-muted-foreground" />
                           Servicing
                         </div>
                         <div className="flex items-center gap-2">
@@ -223,7 +222,7 @@ const Fleet = () => {
                           85% Fuel
                         </div>
                         <div className="flex items-center gap-2">
-                          <Tool className="h-4 w-4 text-muted-foreground" />
+                          <Wrench className="h-4 w-4 text-muted-foreground" />
                           Due in 30 days
                         </div>
                         <div className="flex items-center gap-2">
