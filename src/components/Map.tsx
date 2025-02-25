@@ -5,7 +5,7 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 
 type Location = {
   name: string;
-  coordinates: [number, number]; // This is now explicitly a tuple type
+  coordinates: [number, number];
 };
 
 type AssetCategory = {
@@ -40,74 +40,97 @@ const assetLocations: AssetCategory[] = [
 const Map = () => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
-  const [token, setToken] = useState<string>('');
 
   useEffect(() => {
     if (!mapContainer.current || map.current) return;
     
-    // Initialize map only if we have a token
-    if (token) {
-      mapboxgl.accessToken = token;
-      
-      map.current = new mapboxgl.Map({
-        container: mapContainer.current,
-        style: 'mapbox://styles/mapbox/light-v11',
-        center: [74.1240, 15.2993] as [number, number], // Updated coordinates for Goa
-        zoom: 9,
-        pitch: 45,
+    mapboxgl.accessToken = 'pk.eyJ1IjoiYXNoLXRlY2giLCJhIjoiY203ancxb2wwMDhtejJqc2FtdThqYmcxMiJ9.6IOcY1VUWtyj5lHv8cP0NA';
+    
+    map.current = new mapboxgl.Map({
+      container: mapContainer.current,
+      style: 'mapbox://styles/mapbox/light-v11',
+      center: [74.0855, 15.2993], // Centered on Goa
+      zoom: 9,
+      pitch: 45,
+      maxBounds: [
+        [73.5, 14.8], // Southwest coordinates
+        [74.5, 15.8]  // Northeast coordinates
+      ]
+    });
+
+    // Add navigation controls
+    map.current.addControl(
+      new mapboxgl.NavigationControl({
+        visualizePitch: true,
+      }),
+      'top-right'
+    );
+
+    // Add markers for each asset location
+    assetLocations.forEach(category => {
+      category.locations.forEach(location => {
+        const marker = document.createElement('div');
+        marker.className = 'w-6 h-6 rounded-full bg-primary flex items-center justify-center text-white text-xs font-bold';
+        marker.innerHTML = category.type[0];
+
+        new mapboxgl.Marker({ element: marker })
+          .setLngLat(location.coordinates)
+          .setPopup(
+            new mapboxgl.Popup({ offset: 25 })
+              .setHTML(
+                `<strong>${location.name}</strong><br>Type: ${category.type}`
+              )
+          )
+          .addTo(map.current!);
       });
-
-      // Add navigation controls
-      map.current.addControl(
-        new mapboxgl.NavigationControl({
-          visualizePitch: true,
-        }),
-        'top-right'
-      );
-
-      // Add markers for each asset location
-      assetLocations.forEach(category => {
-        category.locations.forEach(location => {
-          const marker = document.createElement('div');
-          marker.className = 'w-6 h-6 rounded-full bg-primary flex items-center justify-center text-white text-xs font-bold';
-          marker.innerHTML = category.type[0]; // First letter of category type
-
-          new mapboxgl.Marker({ element: marker })
-            .setLngLat(location.coordinates) // Now coordinates are properly typed as [number, number]
-            .setPopup(
-              new mapboxgl.Popup({ offset: 25 })
-                .setHTML(
-                  `<strong>${location.name}</strong><br>Type: ${category.type}`
-                )
-            )
-            .addTo(map.current!);
-        });
-      });
-    }
+    });
 
     return () => {
       if (map.current) {
         map.current.remove();
       }
     };
-  }, [token]);
+  }, []);
 
   return (
-    <div className="relative w-full">
-      {!token && (
-        <div className="absolute inset-0 bg-muted z-10 flex flex-col items-center justify-center p-4 rounded-lg">
-          <input
-            type="text"
-            placeholder="Enter your Mapbox public token"
-            className="px-4 py-2 border rounded-lg mb-4 w-full max-w-md"
-            onChange={(e) => setToken(e.target.value)}
-          />
-          <p className="text-sm text-muted-foreground text-center">
-            Visit mapbox.com to get your public token
-          </p>
-        </div>
-      )}
-      <div ref={mapContainer} className="w-full h-[600px] rounded-lg shadow-lg" />
+    <div className="grid md:grid-cols-2 gap-8 items-start">
+      <div className="space-y-6">
+        <h3 className="text-2xl font-bold">Why Implement an Asset Management Platform?</h3>
+        <p className="text-muted-foreground mb-4">
+          Given the extensive network of local governing bodies and the pressing need for efficient waste management, 
+          a centralized asset management platform offers:
+        </p>
+        <ul className="space-y-4">
+          <li className="flex items-start gap-3">
+            <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center mt-1">
+              <span className="text-primary font-bold">1</span>
+            </div>
+            <div>
+              <h4 className="font-semibold">Streamlined Coordination</h4>
+              <p className="text-muted-foreground">Facilitates collaboration among Village Panchayats, Municipal Councils, and Zilla Panchayats.</p>
+            </div>
+          </li>
+          <li className="flex items-start gap-3">
+            <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center mt-1">
+              <span className="text-primary font-bold">2</span>
+            </div>
+            <div>
+              <h4 className="font-semibold">Resource Optimization</h4>
+              <p className="text-muted-foreground">Ensures effective allocation and monitoring of waste management assets.</p>
+            </div>
+          </li>
+          <li className="flex items-start gap-3">
+            <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center mt-1">
+              <span className="text-primary font-bold">3</span>
+            </div>
+            <div>
+              <h4 className="font-semibold">Enhanced Transparency</h4>
+              <p className="text-muted-foreground">Provides real-time data, promoting accountability and informed decision-making.</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div ref={mapContainer} className="h-[500px] rounded-lg shadow-lg" />
     </div>
   );
 };

@@ -1,4 +1,3 @@
-
 import { Building2, ClipboardCheck, Truck, BarChart3, Target, Map as MapIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -32,11 +31,43 @@ const Index = () => {
   ];
 
   const statistics = [
-    { label: "Village Panchayats", value: "191" },
-    { label: "Municipal Councils", value: "13" },
-    { label: "Daily Waste Generation", value: "226.87 TPD" },
-    { label: "Waste Treatment", value: "197.47 TPD" },
+    { label: "Village Panchayats", value: 191 },
+    { label: "Municipal Councils", value: 13 },
+    { label: "Daily Waste Generation", value: 226.87 },
+    { label: "Waste Treatment", value: 197.47 },
   ];
+
+  const AnimatedNumber = ({ value }: { value: number }) => {
+    const [currentValue, setCurrentValue] = useState(0);
+
+    useEffect(() => {
+      const duration = 2000; // 2 seconds
+      const steps = 60;
+      const stepValue = value / steps;
+      let current = 0;
+      
+      const timer = setInterval(() => {
+        current += stepValue;
+        if (current >= value) {
+          setCurrentValue(value);
+          clearInterval(timer);
+        } else {
+          setCurrentValue(current);
+        }
+      }, duration / steps);
+
+      return () => clearInterval(timer);
+    }, [value]);
+
+    return (
+      <span>
+        {typeof value === 'number' && value % 1 !== 0
+          ? currentValue.toFixed(2)
+          : Math.round(currentValue)}
+        {typeof value === 'number' && value % 1 !== 0 ? ' TPD' : ''}
+      </span>
+    );
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -97,7 +128,9 @@ const Index = () => {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {statistics.map((stat) => (
               <div key={stat.label} className="text-center space-y-2">
-                <div className="text-3xl font-bold text-primary">{stat.value}</div>
+                <div className="text-3xl font-bold text-primary">
+                  <AnimatedNumber value={stat.value} />
+                </div>
                 <div className="text-sm text-muted-foreground">{stat.label}</div>
               </div>
             ))}
@@ -146,10 +179,6 @@ const Index = () => {
             </p>
           </div>
           <Map />
-          <div className="mt-8 text-center text-sm text-muted-foreground">
-            <p>Interactive map showing the distribution of waste management assets across Goa.</p>
-            <p>Click on markers to view detailed information about each asset.</p>
-          </div>
         </div>
       </section>
 
