@@ -1,12 +1,13 @@
+
 import React from 'react';
 import DashboardLayout from '@/components/dashboard/DashboardLayout';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
-  AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, 
-  Tooltip, ResponsiveContainer, PieChart, Pie, Cell
+  AreaChart, Area, PieChart, Pie, Cell,
+  XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
 } from 'recharts';
 import {
   MessagesSquare,
@@ -18,6 +19,17 @@ import {
   Plus
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
+
+interface QueryCardProps {
+  title: string;
+  value: string;
+  description: string;
+  icon: React.ElementType;
+  trend?: {
+    value: string;
+    positive: boolean;
+  };
+}
 
 const data = [
   { name: 'Jan', queries: 40, resolved: 30 },
@@ -35,13 +47,7 @@ const statusData = [
   { name: 'Closed', value: 10, color: '#6B7280' },
 ];
 
-const QueryCard = ({ title, value, description, icon: Icon, trend }: {
-  title: string;
-  value: string;
-  description: string;
-  icon: React.ElementType;
-  trend?: { value: string; positive: boolean };
-}) => (
+const QueryCard: React.FC<QueryCardProps> = ({ title, value, description, icon: Icon, trend }) => (
   <Card className="overflow-hidden transition-all hover:shadow-lg">
     <CardHeader className="flex flex-row items-center justify-between pb-2">
       <CardTitle className="text-sm font-medium text-muted-foreground">{title}</CardTitle>
@@ -65,7 +71,7 @@ const QueryCard = ({ title, value, description, icon: Icon, trend }: {
   </Card>
 );
 
-const Queries = () => {
+const Queries: React.FC = () => {
   const { user } = useAuth();
 
   return (
