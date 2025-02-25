@@ -52,7 +52,7 @@ const Map = () => {
       map.current = new mapboxgl.Map({
         container: mapContainer.current,
         style: 'mapbox://styles/mapbox/light-v11',
-        center: [73.8219, 15.4253] as [number, number], // Explicitly type the center coordinates
+        center: [74.1240, 15.2993] as [number, number], // Updated coordinates for Goa
         zoom: 9,
         pitch: 45,
       });
