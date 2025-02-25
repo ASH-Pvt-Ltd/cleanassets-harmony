@@ -16,9 +16,9 @@ const DashboardHeader = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    logout();
-    navigate('/login');
+  const handleLogout = async () => {
+    await logout();
+    navigate('/', { replace: true }); // Redirect to home page after logout
   };
 
   return (

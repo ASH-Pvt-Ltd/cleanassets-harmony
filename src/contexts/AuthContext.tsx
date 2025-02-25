@@ -111,7 +111,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       if (data.user) {
         const profile = await fetchUserProfile(data.user.id);
-        return !!profile; // Return true if profile exists
+        return !!profile;
       }
 
       return false;
@@ -126,7 +126,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
+      
       setUser(null);
+      toast.success('Successfully logged out');
+      
     } catch (error) {
       console.error('Logout error:', error);
       toast.error('An error occurred during logout');
