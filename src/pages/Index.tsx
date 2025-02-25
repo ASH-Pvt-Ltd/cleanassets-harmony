@@ -1,4 +1,5 @@
-import { Building2, ClipboardCheck, Truck } from "lucide-react";
+
+import { Building2, ClipboardCheck, Truck, BarChart3, Target, Map as MapIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -30,6 +31,13 @@ const Index = () => {
     },
   ];
 
+  const statistics = [
+    { label: "Village Panchayats", value: "191" },
+    { label: "Municipal Councils", value: "13" },
+    { label: "Daily Waste Generation", value: "226.87 TPD" },
+    { label: "Waste Treatment", value: "197.47 TPD" },
+  ];
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navigation />
@@ -45,6 +53,9 @@ const Index = () => {
               Asset Management System for{" "}
               <span className="text-primary">Waste Management</span>
             </h1>
+            <p className="text-2xl font-medium text-muted-foreground mt-4">
+              Track. Manage. Sustain – Goa's Smart Waste Solution!
+            </p>
             <p className="text-xl text-muted-foreground">
               Empowering government authorities and municipalities to efficiently track and manage waste management infrastructure.
             </p>
@@ -58,14 +69,44 @@ const Index = () => {
             </div>
           </div>
         </div>
-        {/* Video background placeholder - add your video element here */}
         <div className="absolute inset-0 -z-10 overflow-hidden">
           {/* Add your video element here when you have it */}
         </div>
       </section>
 
-      {/* Asset Categories Section */}
+      {/* Vision Section */}
+      <section className="py-20 bg-secondary/30">
+        <div className="container px-4">
+          <div className="max-w-4xl mx-auto text-center space-y-8">
+            <Target className="w-12 h-12 text-primary mx-auto" />
+            <h2 className="text-3xl font-bold">Our Vision</h2>
+            <p className="text-lg text-muted-foreground leading-relaxed">
+              To revolutionize waste management in Goa by providing a secure, scalable, and AI-powered asset management platform that enables government authorities and municipalities to track, verify, and optimize infrastructure, facilities, and fleet operations. By leveraging technology, we aim to enhance transparency, improve efficiency, and promote a cleaner, more sustainable future for all communities in Goa.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Statistics Section */}
       <section className="py-20">
+        <div className="container px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold mb-4">Waste Management in Numbers</h2>
+            <p className="text-muted-foreground">Key statistics highlighting our impact across Goa</p>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            {statistics.map((stat) => (
+              <div key={stat.label} className="text-center space-y-2">
+                <div className="text-3xl font-bold text-primary">{stat.value}</div>
+                <div className="text-sm text-muted-foreground">{stat.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Asset Categories Section */}
+      <section className="py-20 bg-secondary/30">
         <div className="container px-4">
           <div className="text-center max-w-2xl mx-auto mb-12">
             <h2 className="text-3xl font-bold mb-4">Comprehensive Asset Management</h2>
@@ -96,7 +137,7 @@ const Index = () => {
       </section>
 
       {/* Map Section */}
-      <section className="py-20 bg-secondary/50">
+      <section className="py-20">
         <div className="container px-4">
           <div className="text-center max-w-2xl mx-auto mb-12">
             <h2 className="text-3xl font-bold mb-4">Asset Distribution Map</h2>
