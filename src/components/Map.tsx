@@ -3,7 +3,17 @@ import React, { useEffect, useRef, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
-const assetLocations = [
+type Location = {
+  name: string;
+  coordinates: [number, number]; // This is now explicitly a tuple type
+};
+
+type AssetCategory = {
+  type: string;
+  locations: Location[];
+};
+
+const assetLocations: AssetCategory[] = [
   {
     type: "Infrastructure",
     locations: [
@@ -42,7 +52,7 @@ const Map = () => {
       map.current = new mapboxgl.Map({
         container: mapContainer.current,
         style: 'mapbox://styles/mapbox/light-v11',
-        center: [73.8219, 15.4253], // Centered on Goa
+        center: [73.8219, 15.4253] as [number, number], // Explicitly type the center coordinates
         zoom: 9,
         pitch: 45,
       });
@@ -63,7 +73,7 @@ const Map = () => {
           marker.innerHTML = category.type[0]; // First letter of category type
 
           new mapboxgl.Marker({ element: marker })
-            .setLngLat(location.coordinates)
+            .setLngLat(location.coordinates) // Now coordinates are properly typed as [number, number]
             .setPopup(
               new mapboxgl.Popup({ offset: 25 })
                 .setHTML(
