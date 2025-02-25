@@ -1,5 +1,6 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 type Role = 'government' | 'municipality' | 'verification';
 
@@ -30,24 +31,25 @@ interface AuthContextType {
   user: User | null;
   login: (id: string, password: string) => boolean;
   logout: () => void;
+  isLoading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
       setUser(JSON.parse(storedUser));
     }
+    setIsLoading(false);
   }, []);
 
   const login = (id: string, password: string) => {
-    console.log('Attempting login with:', { id, password }); // Debug log
     const foundUser = mockUsers.find(u => u.id === id && u.password === password);
-    console.log('Found user:', foundUser); // Debug log
     
     if (foundUser) {
       const userWithLogin = {
@@ -67,7 +69,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, login, logout, isLoading }}>
       {children}
     </AuthContext.Provider>
   );
