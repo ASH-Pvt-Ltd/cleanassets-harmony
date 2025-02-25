@@ -26,12 +26,22 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <div className="min-h-screen flex flex-col relative">
+      {/* Background with gradient */}
+      <div className="absolute inset-0 bg-gradient-to-br from-green-50 via-blue-50 to-purple-50">
+        {/* Decorative elements */}
+        <div className="absolute inset-0 opacity-20">
+          <div className="absolute top-20 left-20 w-64 h-64 bg-primary/20 rounded-full mix-blend-multiply filter blur-xl animate-blob"></div>
+          <div className="absolute top-40 right-20 w-64 h-64 bg-purple-300/20 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-2000"></div>
+          <div className="absolute -bottom-8 left-40 w-64 h-64 bg-yellow-300/20 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-4000"></div>
+        </div>
+      </div>
+
       {/* Back to Home Navigation */}
-      <div className="p-4">
+      <div className="relative z-10 p-4">
         <Button
           variant="ghost"
-          className="flex items-center gap-2"
+          className="flex items-center gap-2 hover:bg-white/50"
           onClick={() => navigate('/')}
         >
           <ArrowLeft className="h-4 w-4" />
@@ -40,15 +50,15 @@ const Login = () => {
       </div>
 
       {/* Login Card */}
-      <div className="flex-1 flex items-center justify-center">
-        <Card className="w-[400px]">
+      <div className="flex-1 flex items-center justify-center relative z-10">
+        <Card className="w-[320px] bg-white/80 backdrop-blur-sm">
           <CardHeader className="text-center">
             <div className="flex justify-center mb-4">
-              <Truck className="h-12 w-12 text-primary" />
+              <Truck className="h-10 w-10 text-primary" />
             </div>
-            <CardTitle className="text-2xl">Sign in to SwachhGoa</CardTitle>
+            <CardTitle className="text-xl">Sign in to SwachhGoa</CardTitle>
             <CardDescription>
-              Enter your credentials to access your dashboard
+              Enter your credentials
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -61,6 +71,7 @@ const Login = () => {
                   value={id}
                   onChange={(e) => setId(e.target.value)}
                   required
+                  className="bg-white/50"
                 />
               </div>
               <div className="space-y-2">
@@ -71,6 +82,7 @@ const Login = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
+                  className="bg-white/50"
                 />
               </div>
               <Button type="submit" className="w-full">
@@ -78,12 +90,12 @@ const Login = () => {
               </Button>
             </form>
           </CardContent>
-          <CardFooter className="flex flex-col gap-4 text-center text-sm text-muted-foreground">
+          <CardFooter className="flex flex-col gap-3 text-center text-sm text-muted-foreground">
             <div>
-              Need access? Contact your department administrator
+              Need access? Contact administrator
             </div>
             <div className="text-xs">
-              Admin: 0551-xxx | Supervisor: 0552-xxx | Operator: 0553-xxx
+              Admin: 0551-xxx | Supervisor: 0552-xxx
             </div>
           </CardFooter>
         </Card>
