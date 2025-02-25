@@ -60,9 +60,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         .eq('id', userId)
         .single();
 
-      if (error) {
-        throw error;
-      }
+      if (error) throw error;
 
       if (data) {
         setUser({
@@ -81,19 +79,34 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const login = async (email: string, password: string) => {
+  const login = async (id: string, password: string) => {
     try {
+      // Convert the ID format to email format for Supabase
+      let email = '';
+      if (id.startsWith('Goa')) {
+        email = `${id}@goa.gov.in`;
+      } else if (id.startsWith('Mun')) {
+        email = `${id}@municipality.gov.in`;
+      } else if (id.startsWith('Ver')) {
+        email = `${id}@verification.gov.in`;
+      } else {
+        toast.error('Invalid ID format');
+        return false;
+      }
+
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
       if (error) {
+        console.error('Login error:', error.message);
         toast.error(error.message);
         return false;
       }
 
       if (data.user) {
+        // The user profile will be automatically fetched by the auth state change listener
         return true;
       }
 
@@ -108,9 +121,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const logout = async () => {
     try {
       const { error } = await supabase.auth.signOut();
-      if (error) {
-        throw error;
-      }
+      if (error) throw error;
       setUser(null);
     } catch (error) {
       console.error('Logout error:', error);
