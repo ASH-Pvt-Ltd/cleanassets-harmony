@@ -9,7 +9,158 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      assets: {
+        Row: {
+          asset_id: string
+          created_at: string
+          description: string | null
+          id: string
+          municipality_id: string | null
+          name: string
+          status: string
+          type: Database["public"]["Enums"]["asset_type"]
+          updated_at: string
+        }
+        Insert: {
+          asset_id: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          municipality_id?: string | null
+          name: string
+          status?: string
+          type: Database["public"]["Enums"]["asset_type"]
+          updated_at?: string
+        }
+        Update: {
+          asset_id?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          municipality_id?: string | null
+          name?: string
+          status?: string
+          type?: Database["public"]["Enums"]["asset_type"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "assets_municipality_id_fkey"
+            columns: ["municipality_id"]
+            isOneToOne: false
+            referencedRelation: "municipalities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      municipalities: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          region: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          region?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          region?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          full_name: string | null
+          id: string
+          organization: string | null
+          role: Database["public"]["Enums"]["user_role"]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          full_name?: string | null
+          id: string
+          organization?: string | null
+          role: Database["public"]["Enums"]["user_role"]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          organization?: string | null
+          role?: Database["public"]["Enums"]["user_role"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      verifications: {
+        Row: {
+          asset_id: string
+          created_at: string
+          details: string | null
+          id: string
+          notes: string | null
+          status: Database["public"]["Enums"]["verification_status"]
+          submission_date: string
+          updated_at: string
+          verification_date: string | null
+          verification_id: string
+          verified_by: string | null
+        }
+        Insert: {
+          asset_id: string
+          created_at?: string
+          details?: string | null
+          id?: string
+          notes?: string | null
+          status?: Database["public"]["Enums"]["verification_status"]
+          submission_date?: string
+          updated_at?: string
+          verification_date?: string | null
+          verification_id: string
+          verified_by?: string | null
+        }
+        Update: {
+          asset_id?: string
+          created_at?: string
+          details?: string | null
+          id?: string
+          notes?: string | null
+          status?: Database["public"]["Enums"]["verification_status"]
+          submission_date?: string
+          updated_at?: string
+          verification_date?: string | null
+          verification_id?: string
+          verified_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "verifications_asset_id_fkey"
+            columns: ["asset_id"]
+            isOneToOne: false
+            referencedRelation: "assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "verifications_verified_by_fkey"
+            columns: ["verified_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -18,7 +169,9 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      asset_type: "vehicle" | "equipment" | "infrastructure"
+      user_role: "government" | "municipality" | "verification"
+      verification_status: "pending" | "verified" | "rejected"
     }
     CompositeTypes: {
       [_ in never]: never

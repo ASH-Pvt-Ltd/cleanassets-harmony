@@ -1,36 +1,23 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 
-type Role = 'government' | 'municipality' | 'verification';
+export type Role = 'government' | 'municipality' | 'verification';
 
-interface User {
+export interface User {
   id: string;
-  password: string;
   role: Role;
   name: string;
   organization: string;
   lastLogin?: string;
 }
 
-const mockUsers: User[] = [
-  // Government Users (Goa1-xxx)
-  { id: "Goa1-001", password: "g001", role: "government", name: "Govt Officer One", organization: "Goa Government" },
-  { id: "Goa1-002", password: "g002", role: "government", name: "Govt Officer Two", organization: "Goa Government" },
-  
-  // Municipality Users (Mun1-xxx)
-  { id: "Mun1-001", password: "m001", role: "municipality", name: "Municipality Officer One", organization: "Panaji Municipality" },
-  { id: "Mun1-002", password: "m002", role: "municipality", name: "Municipality Officer Two", organization: "Margao Municipality" },
-  
-  // Verification Officers (Ver1-xxx)
-  { id: "Ver1-001", password: "v001", role: "verification", name: "Verification Officer One", organization: "Verification Department" },
-  { id: "Ver1-002", password: "v002", role: "verification", name: "Verification Officer Two", organization: "Verification Department" },
-];
-
 interface AuthContextType {
   user: User | null;
-  login: (id: string, password: string) => boolean;
-  logout: () => void;
+  login: (id: string, password: string) => Promise<boolean>;
+  logout: () => Promise<void>;
   isLoading: boolean;
 }
 
@@ -41,31 +28,94 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-    setIsLoading(false);
+    // Check active session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        fetchUserProfile(session.user.id);
+      } else {
+        setIsLoading(false);
+      }
+    });
+
+    // Listen for auth changes
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session) {
+        fetchUserProfile(session.user.id);
+      } else {
+        setUser(null);
+        setIsLoading(false);
+      }
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
-  const login = (id: string, password: string) => {
-    const foundUser = mockUsers.find(u => u.id === id && u.password === password);
-    
-    if (foundUser) {
-      const userWithLogin = {
-        ...foundUser,
-        lastLogin: new Date().toISOString(),
-      };
-      setUser(userWithLogin);
-      localStorage.setItem('user', JSON.stringify(userWithLogin));
-      return true;
+  const fetchUserProfile = async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', userId)
+        .single();
+
+      if (error) {
+        throw error;
+      }
+
+      if (data) {
+        setUser({
+          id: data.id,
+          role: data.role,
+          name: data.full_name,
+          organization: data.organization,
+          lastLogin: new Date().toISOString(),
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching user profile:', error);
+      toast.error('Error fetching user profile');
+    } finally {
+      setIsLoading(false);
     }
-    return false;
   };
 
-  const logout = () => {
-    setUser(null);
-    localStorage.removeItem('user');
+  const login = async (email: string, password: string) => {
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) {
+        toast.error(error.message);
+        return false;
+      }
+
+      if (data.user) {
+        return true;
+      }
+
+      return false;
+    } catch (error) {
+      console.error('Login error:', error);
+      toast.error('An error occurred during login');
+      return false;
+    }
+  };
+
+  const logout = async () => {
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        throw error;
+      }
+      setUser(null);
+    } catch (error) {
+      console.error('Logout error:', error);
+      toast.error('An error occurred during logout');
+    }
   };
 
   return (
