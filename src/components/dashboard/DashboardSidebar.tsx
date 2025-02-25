@@ -63,8 +63,8 @@ const DashboardSidebar = () => {
   return (
     <Sidebar className="border-r bg-white">
       <SidebarHeader className="p-4 border-b">
-        <h2 className="text-lg font-semibold">SwachhGoa</h2>
-        <p className="text-sm text-muted-foreground">{user?.role} Portal</p>
+        <h2 className="text-lg font-semibold">Asset Management</h2>
+        <p className="text-sm text-muted-foreground capitalize">{user?.role} Dashboard</p>
       </SidebarHeader>
       <SidebarContent>
         <nav className="space-y-1 p-2">

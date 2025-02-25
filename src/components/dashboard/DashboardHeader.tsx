@@ -24,7 +24,7 @@ const DashboardHeader = () => {
   return (
     <header className="border-b bg-white px-6 py-3">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold text-gray-800">SwachhGoa Dashboard</h1>
+        <h1 className="text-xl font-semibold text-gray-800">Asset Management Dashboard</h1>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="flex items-center gap-2">
