@@ -1,5 +1,5 @@
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
@@ -92,47 +92,7 @@ const Map = () => {
     };
   }, []);
 
-  return (
-    <div className="grid md:grid-cols-2 gap-8 items-start">
-      <div className="space-y-6">
-        <h3 className="text-2xl font-bold">Why Implement an Asset Management Platform?</h3>
-        <p className="text-muted-foreground mb-4">
-          Given the extensive network of local governing bodies and the pressing need for efficient waste management, 
-          a centralized asset management platform offers:
-        </p>
-        <ul className="space-y-4">
-          <li className="flex items-start gap-3">
-            <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center mt-1">
-              <span className="text-primary font-bold">1</span>
-            </div>
-            <div>
-              <h4 className="font-semibold">Streamlined Coordination</h4>
-              <p className="text-muted-foreground">Facilitates collaboration among Village Panchayats, Municipal Councils, and Zilla Panchayats.</p>
-            </div>
-          </li>
-          <li className="flex items-start gap-3">
-            <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center mt-1">
-              <span className="text-primary font-bold">2</span>
-            </div>
-            <div>
-              <h4 className="font-semibold">Resource Optimization</h4>
-              <p className="text-muted-foreground">Ensures effective allocation and monitoring of waste management assets.</p>
-            </div>
-          </li>
-          <li className="flex items-start gap-3">
-            <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center mt-1">
-              <span className="text-primary font-bold">3</span>
-            </div>
-            <div>
-              <h4 className="font-semibold">Enhanced Transparency</h4>
-              <p className="text-muted-foreground">Provides real-time data, promoting accountability and informed decision-making.</p>
-            </div>
-          </li>
-        </ul>
-      </div>
-      <div ref={mapContainer} className="h-[500px] rounded-lg shadow-lg" />
-    </div>
-  );
+  return <div ref={mapContainer} className="h-[500px] rounded-lg shadow-lg" />;
 };
 
 export default Map;
