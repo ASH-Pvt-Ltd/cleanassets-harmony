@@ -19,6 +19,7 @@ import {
   Settings,
   HelpCircle,
   AlertCircle,
+  Building,
 } from 'lucide-react';
 
 const DashboardSidebar = () => {
@@ -29,6 +30,7 @@ const DashboardSidebar = () => {
       case 'government':
         return [
           { icon: LayoutDashboard, label: 'Overview', to: '/dashboard' },
+          { icon: Building, label: 'Infrastructure', to: '/dashboard/infrastructure' },
           { icon: Building2, label: 'Asset Management', to: '/dashboard/assets' },
           { icon: Truck, label: 'Fleet Management', to: '/dashboard/fleet' },
           { icon: ClipboardCheck, label: 'Approvals', to: '/dashboard/approvals' },
@@ -39,6 +41,7 @@ const DashboardSidebar = () => {
       case 'municipality':
         return [
           { icon: LayoutDashboard, label: 'Overview', to: '/dashboard' },
+          { icon: Building, label: 'Infrastructure', to: '/dashboard/infrastructure' },
           { icon: Building2, label: 'My Assets', to: '/dashboard/assets' },
           { icon: AlertCircle, label: 'Raise Query', to: '/dashboard/queries' },
           { icon: ClipboardCheck, label: 'Asset Requests', to: '/dashboard/requests' },
@@ -47,6 +50,7 @@ const DashboardSidebar = () => {
       case 'verification':
         return [
           { icon: LayoutDashboard, label: 'Overview', to: '/dashboard' },
+          { icon: Building, label: 'Infrastructure', to: '/dashboard/infrastructure' },
           { icon: ClipboardCheck, label: 'Pending Verifications', to: '/dashboard/pending' },
           { icon: FileText, label: 'Verified Records', to: '/dashboard/verified' },
           { icon: AlertCircle, label: 'Rejected Records', to: '/dashboard/rejected' },
