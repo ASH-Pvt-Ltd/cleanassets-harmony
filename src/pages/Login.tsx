@@ -9,9 +9,8 @@ import { toast } from 'sonner';
 import { Truck, ArrowLeft, Info } from 'lucide-react';
 
 const Login = () => {
-  const [email, setEmail] = useState('');
+  const [id, setId] = useState('');
   const [password, setPassword] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const { login, user } = useAuth();
   const navigate = useNavigate();
 
@@ -20,31 +19,35 @@ const Login = () => {
     return <Navigate to="/dashboard" replace />;
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
+    
+    // Show loading toast
+    const loadingToast = toast.loading('Signing in...');
     
     try {
-      const success = await login(email, password);
-      if (success) {
+      if (login(id, password)) {
+        toast.dismiss(loadingToast);
         toast.success('Login successful');
         navigate('/dashboard', { replace: true });
+      } else {
+        toast.dismiss(loadingToast);
+        toast.error('Invalid credentials. Please check your ID and password.');
       }
     } catch (error) {
+      toast.dismiss(loadingToast);
+      toast.error('An error occurred. Please try again.');
       console.error('Login error:', error);
-      toast.error('Invalid credentials. Please check your email and password.');
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
-  // Helper function to show email format hint
-  const showEmailFormatHint = () => {
+  // Helper function to show ID format hint
+  const showIdFormatHint = () => {
     toast.info(
-      'Email Format Examples:\n' +
-      'Government: user@goa.gov.in\n' +
-      'Municipality: user@municipality.gov.in\n' +
-      'Verification: user@verification.gov.in',
+      'ID Format Examples:\n' +
+      'Government: Goa1-001\n' +
+      'Municipality: Mun1-001\n' +
+      'Verification: Ver1-001',
       {
         duration: 5000,
       }
@@ -104,25 +107,24 @@ const Login = () => {
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
                 <label className="text-sm font-medium flex items-center justify-between">
-                  Email
+                  User ID
                   <Button
                     type="button"
                     variant="ghost"
                     size="sm"
                     className="h-6 w-6 p-0"
-                    onClick={showEmailFormatHint}
+                    onClick={showIdFormatHint}
                   >
                     <Info className="h-4 w-4" />
                   </Button>
                 </label>
                 <Input
-                  type="email"
-                  placeholder="Enter your email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  type="text"
+                  placeholder="Enter your ID (e.g., Goa1-001)"
+                  value={id}
+                  onChange={(e) => setId(e.target.value)}
                   required
                   className="bg-white/50 transition-colors focus:bg-white"
-                  disabled={isSubmitting}
                 />
               </div>
               <div className="space-y-2">
@@ -134,15 +136,10 @@ const Login = () => {
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   className="bg-white/50 transition-colors focus:bg-white"
-                  disabled={isSubmitting}
                 />
               </div>
-              <Button 
-                type="submit" 
-                className="w-full transition-transform hover:scale-[1.02]"
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? 'Signing in...' : 'Sign In'}
+              <Button type="submit" className="w-full transition-transform hover:scale-[1.02]">
+                Sign In
               </Button>
             </form>
           </CardContent>
