@@ -1,5 +1,5 @@
 
-import { Building2 } from "lucide-react";
+import { Truck } from "lucide-react";
 
 const Footer = () => {
   return (
@@ -8,7 +8,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="space-y-4">
             <div className="flex items-center space-x-2">
-              <Building2 className="h-6 w-6 text-primary" />
+              <Truck className="h-6 w-6 text-primary" />
               <span className="font-semibold">SwachhGoa</span>
             </div>
             <p className="text-sm text-muted-foreground">
