@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { ArrowLeft, Truck, Building2, Users2, ShieldCheck, ArrowRight } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 
 type Role = 'government' | 'municipality' | 'verification' | null;
 
