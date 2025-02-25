@@ -13,17 +13,17 @@ interface User {
 }
 
 const mockUsers: User[] = [
-  // Government Users (0551)
-  { id: "0551-001", password: "0551", role: "government", name: "Govt Officer One", organization: "Goa Government" },
-  { id: "0551-002", password: "0551", role: "government", name: "Govt Officer Two", organization: "Goa Government" },
+  // Government Users (Goa1-xxx)
+  { id: "Goa1-001", password: "g001", role: "government", name: "Govt Officer One", organization: "Goa Government" },
+  { id: "Goa1-002", password: "g002", role: "government", name: "Govt Officer Two", organization: "Goa Government" },
   
-  // Municipality Users (0552)
-  { id: "0552-001", password: "0552", role: "municipality", name: "Municipality Officer One", organization: "Panaji Municipality" },
-  { id: "0552-002", password: "0552", role: "municipality", name: "Municipality Officer Two", organization: "Margao Municipality" },
+  // Municipality Users (Mun1-xxx)
+  { id: "Mun1-001", password: "m001", role: "municipality", name: "Municipality Officer One", organization: "Panaji Municipality" },
+  { id: "Mun1-002", password: "m002", role: "municipality", name: "Municipality Officer Two", organization: "Margao Municipality" },
   
-  // Verification Officers (0553)
-  { id: "0553-001", password: "0553", role: "verification", name: "Verification Officer One", organization: "Verification Department" },
-  { id: "0553-002", password: "0553", role: "verification", name: "Verification Officer Two", organization: "Verification Department" },
+  // Verification Officers (Ver1-xxx)
+  { id: "Ver1-001", password: "v001", role: "verification", name: "Verification Officer One", organization: "Verification Department" },
+  { id: "Ver1-002", password: "v002", role: "verification", name: "Verification Officer Two", organization: "Verification Department" },
 ];
 
 interface AuthContextType {
