@@ -1,4 +1,3 @@
-
 import React from 'react';
 import DashboardLayout from '@/components/dashboard/DashboardLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -182,11 +181,13 @@ const Queries = () => {
 
         <Card className="p-6">
           <div className="flex justify-between items-center mb-6">
-            <Input
-              placeholder="Search queries..."
-              className="max-w-sm"
-              icon={<Search className="h-4 w-4" />}
-            />
+            <div className="flex items-center max-w-sm w-full relative">
+              <Input
+                placeholder="Search queries..."
+                className="pr-8"
+              />
+              <Search className="h-4 w-4 absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" />
+            </div>
             <div className="space-x-2">
               <Button variant="outline">
                 Filter
