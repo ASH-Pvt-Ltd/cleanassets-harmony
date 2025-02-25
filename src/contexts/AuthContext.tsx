@@ -40,13 +40,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Listen for auth changes
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
+    } = supabase.auth.onAuthStateChange(async (_event, session) => {
       if (session) {
-        fetchUserProfile(session.user.id);
+        await fetchUserProfile(session.user.id);
       } else {
         setUser(null);
-        setIsLoading(false);
       }
+      setIsLoading(false);
     });
 
     return () => subscription.unsubscribe();
@@ -54,40 +54,44 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const fetchUserProfile = async (userId: string) => {
     try {
-      const { data, error } = await supabase
+      const { data: profile, error } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', userId)
-        .single();
+        .maybeSingle();
 
-      if (error) throw error;
+      if (error) {
+        throw error;
+      }
 
-      if (data) {
+      if (profile) {
         setUser({
-          id: data.id,
-          role: data.role,
-          name: data.full_name,
-          organization: data.organization,
+          id: profile.id,
+          role: profile.role,
+          name: profile.full_name || '',
+          organization: profile.organization || '',
           lastLogin: new Date().toISOString(),
         });
+        return profile;
+      } else {
+        throw new Error('Profile not found');
       }
     } catch (error) {
       console.error('Error fetching user profile:', error);
       toast.error('Error fetching user profile');
-    } finally {
-      setIsLoading(false);
+      return null;
     }
   };
 
-  const login = async (id: string, password: string) => {
+  const login = async (id: string, password: string): Promise<boolean> => {
     try {
       // Convert the ID format to email format for Supabase
       let email = '';
-      if (id.startsWith('Goa')) {
+      if (id.toLowerCase().startsWith('goa')) {
         email = `${id}@goa.gov.in`;
-      } else if (id.startsWith('Mun')) {
+      } else if (id.toLowerCase().startsWith('mun')) {
         email = `${id}@municipality.gov.in`;
-      } else if (id.startsWith('Ver')) {
+      } else if (id.toLowerCase().startsWith('ver')) {
         email = `${id}@verification.gov.in`;
       } else {
         toast.error('Invalid ID format');
@@ -106,8 +110,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
 
       if (data.user) {
-        // The user profile will be automatically fetched by the auth state change listener
-        return true;
+        const profile = await fetchUserProfile(data.user.id);
+        return !!profile; // Return true if profile exists
       }
 
       return false;
