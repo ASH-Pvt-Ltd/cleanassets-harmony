@@ -1,7 +1,8 @@
 
 import React, { useState } from 'react';
-import { MessageCircle, X } from 'lucide-react';
+import { MessageCircle, Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import {
   Sheet,
   SheetContent,
@@ -12,6 +13,16 @@ import {
 
 const ChatbotButton = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [message, setMessage] = useState('');
+
+  const handleSendMessage = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (message.trim()) {
+      // TODO: Implement message sending logic
+      console.log('Message sent:', message);
+      setMessage('');
+    }
+  };
 
   return (
     <div className="fixed bottom-4 right-4 z-50">
@@ -24,21 +35,11 @@ const ChatbotButton = () => {
             <MessageCircle className="h-6 w-6" />
           </Button>
         </SheetTrigger>
-        <SheetContent className="w-[400px] sm:w-[540px]">
+        <SheetContent className="w-[400px] sm:w-[540px] flex flex-col">
           <SheetHeader>
-            <SheetTitle className="flex items-center justify-between">
-              <span>SwachhGoa Assistant</span>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setIsOpen(false)}
-                className="rounded-full"
-              >
-                <X className="h-4 w-4" />
-              </Button>
-            </SheetTitle>
+            <SheetTitle>SwachhGoa Assistant</SheetTitle>
           </SheetHeader>
-          <div className="mt-4 space-y-4">
+          <div className="flex-1 mt-4 space-y-4">
             <div className="bg-muted p-4 rounded-lg">
               <p className="text-sm">
                 👋 Hi! I'm your SwachhGoa Assistant. I can help you:
@@ -56,6 +57,17 @@ const ChatbotButton = () => {
                 Chat functionality coming soon...
               </p>
             </div>
+            <form onSubmit={handleSendMessage} className="flex gap-2">
+              <Input
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                placeholder="Type your message here..."
+                className="flex-1"
+              />
+              <Button type="submit" size="icon">
+                <Send className="h-4 w-4" />
+              </Button>
+            </form>
           </div>
         </SheetContent>
       </Sheet>
