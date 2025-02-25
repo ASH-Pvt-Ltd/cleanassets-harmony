@@ -1,12 +1,12 @@
-
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, Navigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { ArrowLeft, Truck, Building2, Users2, ShieldCheck, ArrowRight } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
+import { toast } from 'react-toastify';
 
 type Role = 'government' | 'municipality' | 'verification' | null;
 
@@ -19,6 +19,7 @@ interface RegistrationData {
 
 const Register = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [selectedRole, setSelectedRole] = useState<Role>(null);
   const [formData, setFormData] = useState<RegistrationData>({
     name: '',
@@ -27,9 +28,12 @@ const Register = () => {
     password: '',
   });
 
+  if (user) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
   const handleRoleSelect = (role: Role) => {
     setSelectedRole(role);
-    // Reset form data when switching roles
     setFormData({
       name: '',
       organization: '',
@@ -40,9 +44,8 @@ const Register = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Here you would typically make an API call to register the user
-    // For now, we'll just redirect to login
-    navigate('/login');
+    toast.success('Registration request submitted successfully');
+    navigate('/login', { replace: true });
   };
 
   const getIdFormat = (role: Role) => {
@@ -73,7 +76,6 @@ const Register = () => {
 
   return (
     <div className="min-h-screen flex flex-col relative">
-      {/* Background with gradient */}
       <div className="absolute inset-0 bg-gradient-to-br from-green-50 via-blue-50 to-purple-50">
         <div className="absolute inset-0 opacity-20">
           <div className="absolute top-20 left-20 w-64 h-64 bg-primary/20 rounded-full mix-blend-multiply filter blur-xl animate-blob"></div>
@@ -82,7 +84,6 @@ const Register = () => {
         </div>
       </div>
 
-      {/* Back Navigation */}
       <div className="relative z-10 p-4">
         <Button
           variant="ghost"
@@ -94,7 +95,6 @@ const Register = () => {
         </Button>
       </div>
 
-      {/* Registration Card */}
       <div className="flex-1 flex items-center justify-center relative z-10">
         <Card className="w-[380px] bg-white/80 backdrop-blur-sm">
           <CardHeader className="text-center">

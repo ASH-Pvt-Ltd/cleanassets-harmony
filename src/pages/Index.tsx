@@ -12,8 +12,10 @@ import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import Map from "@/components/Map";
 import { Link } from "react-router-dom";
+import { useAuth } from "@/context/AuthContext";
 
 const Index = () => {
+  const { user } = useAuth();
   const assetCategories = [
     {
       title: "Infrastructure",
@@ -93,12 +95,20 @@ const Index = () => {
               Empowering government authorities and municipalities to efficiently track and manage waste management infrastructure.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-              <Button size="lg" asChild>
-                <Link to="/login">Sign In</Link>
-              </Button>
-              <Button size="lg" variant="outline" asChild>
-                <Link to="/register">Register</Link>
-              </Button>
+              {user ? (
+                <Button size="lg" asChild>
+                  <Link to="/dashboard">Go to Dashboard</Link>
+                </Button>
+              ) : (
+                <>
+                  <Button size="lg" asChild>
+                    <Link to="/login">Sign In</Link>
+                  </Button>
+                  <Button size="lg" variant="outline" asChild>
+                    <Link to="/register">Register</Link>
+                  </Button>
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -162,7 +172,9 @@ const Index = () => {
                 </CardHeader>
                 <CardContent>
                   <Button variant="secondary" className="w-full" asChild>
-                    <a href={`#learn-more-${category.title.toLowerCase()}`}>Learn More</a>
+                    <Link to={user ? "/dashboard" : "/login"}>
+                      {user ? "View Details" : "Sign in to View"}
+                    </Link>
                   </Button>
                 </CardContent>
               </Card>

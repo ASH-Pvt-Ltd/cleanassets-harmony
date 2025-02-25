@@ -1,6 +1,6 @@
 
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, Link, Navigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -11,8 +11,13 @@ import { Truck, ArrowLeft, Info } from 'lucide-react';
 const Login = () => {
   const [id, setId] = useState('');
   const [password, setPassword] = useState('');
-  const { login } = useAuth();
+  const { login, user } = useAuth();
   const navigate = useNavigate();
+
+  // Redirect if already logged in
+  if (user) {
+    return <Navigate to="/dashboard" replace />;
+  }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,7 +29,7 @@ const Login = () => {
       if (login(id, password)) {
         toast.dismiss(loadingToast);
         toast.success('Login successful');
-        navigate('/dashboard');
+        navigate('/dashboard', { replace: true });
       } else {
         toast.dismiss(loadingToast);
         toast.error('Invalid credentials. Please check your ID and password.');
