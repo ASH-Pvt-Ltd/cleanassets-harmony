@@ -1,27 +1,29 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
-type Role = 'admin' | 'supervisor' | 'operator';
+type Role = 'government' | 'municipality' | 'verification';
 
 interface User {
   id: string;
   password: string;
   role: Role;
   name: string;
+  organization: string;
+  lastLogin?: string;
 }
 
 const mockUsers: User[] = [
-  // Admin users (0551)
-  { id: "0551-001", password: "0551", role: "admin", name: "Admin One" },
-  { id: "0551-002", password: "0551", role: "admin", name: "Admin Two" },
+  // Government Users (0551)
+  { id: "0551-001", password: "0551", role: "government", name: "Govt Officer One", organization: "Goa Government" },
+  { id: "0551-002", password: "0551", role: "government", name: "Govt Officer Two", organization: "Goa Government" },
   
-  // Supervisor users (0552)
-  { id: "0552-001", password: "0552", role: "supervisor", name: "Supervisor One" },
-  { id: "0552-002", password: "0552", role: "supervisor", name: "Supervisor Two" },
+  // Municipality Users (0552)
+  { id: "0552-001", password: "0552", role: "municipality", name: "Municipality Officer One", organization: "Panaji Municipality" },
+  { id: "0552-002", password: "0552", role: "municipality", name: "Municipality Officer Two", organization: "Margao Municipality" },
   
-  // Operator users (0553)
-  { id: "0553-001", password: "0553", role: "operator", name: "Operator One" },
-  { id: "0553-002", password: "0553", role: "operator", name: "Operator Two" },
+  // Verification Officers (0553)
+  { id: "0553-001", password: "0553", role: "verification", name: "Verification Officer One", organization: "Verification Department" },
+  { id: "0553-002", password: "0553", role: "verification", name: "Verification Officer Two", organization: "Verification Department" },
 ];
 
 interface AuthContextType {
@@ -45,8 +47,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const login = (id: string, password: string) => {
     const foundUser = mockUsers.find(u => u.id === id && u.password === password);
     if (foundUser) {
-      setUser(foundUser);
-      localStorage.setItem('user', JSON.stringify(foundUser));
+      const userWithLogin = {
+        ...foundUser,
+        lastLogin: new Date().toISOString(),
+      };
+      setUser(userWithLogin);
+      localStorage.setItem('user', JSON.stringify(userWithLogin));
       return true;
     }
     return false;

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Building2, ClipboardCheck, Truck, BarChart3, Target, Map as MapIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -12,6 +11,7 @@ import {
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import Map from "@/components/Map";
+import { Link } from "react-router-dom";
 
 const Index = () => {
   const assetCategories = [
@@ -94,10 +94,10 @@ const Index = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
               <Button size="lg" asChild>
-                <a href="#register">Get Started</a>
+                <Link to="/login">Sign In</Link>
               </Button>
               <Button size="lg" variant="outline" asChild>
-                <a href="#learn-more">Learn More</a>
+                <Link to="/register">Register</Link>
               </Button>
             </div>
           </div>

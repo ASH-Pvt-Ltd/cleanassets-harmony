@@ -1,15 +1,25 @@
 
 import { Button } from "./ui/button";
-import { Menu, Truck } from "lucide-react";
+import { Menu, Truck, LogOut, User } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
+import { useAuth } from "@/contexts/AuthContext";
+import { Link, useNavigate } from "react-router-dom";
 
 const Navigation = () => {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+  
   const menuItems = [
     { label: "Home", href: "/" },
     { label: "About", href: "#about" },
     { label: "Services", href: "#services" },
     { label: "Contact", href: "#contact" },
   ];
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
 
   return (
     <header className="fixed top-0 w-full bg-background/30 backdrop-blur-sm z-50">
@@ -29,12 +39,23 @@ const Navigation = () => {
               {item.label}
             </a>
           ))}
-          <Button asChild variant="outline" className="ml-4">
-            <a href="#login">Login</a>
-          </Button>
-          <Button asChild>
-            <a href="#register">Register</a>
-          </Button>
+          {user ? (
+            <div className="flex items-center gap-4">
+              <span className="text-sm font-medium">{user.name}</span>
+              <Button variant="outline" size="icon" onClick={handleLogout}>
+                <LogOut className="h-4 w-4" />
+              </Button>
+            </div>
+          ) : (
+            <>
+              <Button asChild variant="outline">
+                <Link to="/login">Sign In</Link>
+              </Button>
+              <Button asChild>
+                <Link to="/register">Register</Link>
+              </Button>
+            </>
+          )}
         </nav>
 
         <Sheet>
@@ -54,12 +75,23 @@ const Navigation = () => {
                   {item.label}
                 </a>
               ))}
-              <Button asChild variant="outline" className="w-full">
-                <a href="#login">Login</a>
-              </Button>
-              <Button asChild className="w-full">
-                <a href="#register">Register</a>
-              </Button>
+              {user ? (
+                <>
+                  <div className="py-2 text-sm font-medium">{user.name}</div>
+                  <Button variant="outline" onClick={handleLogout}>
+                    Sign Out
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button asChild variant="outline" className="w-full">
+                    <Link to="/login">Sign In</Link>
+                  </Button>
+                  <Button asChild className="w-full">
+                    <Link to="/register">Register</Link>
+                  </Button>
+                </>
+              )}
             </div>
           </SheetContent>
         </Sheet>
