@@ -37,7 +37,7 @@ const Index = () => {
       {/* Hero Section */}
       <section className="pt-24 lg:pt-32 hero-gradient">
         <div className="container px-4 pb-20">
-          <div className="max-w-3xl mx-auto text-center space-y-6 animate-fade-in">
+          <div className="hero-content max-w-3xl mx-auto text-center space-y-6 animate-fade-in">
             <div className="inline-block px-3 py-1 rounded-full bg-secondary text-secondary-foreground text-sm font-medium mb-6">
               Government of Goa Initiative
             </div>
@@ -57,6 +57,10 @@ const Index = () => {
               </Button>
             </div>
           </div>
+        </div>
+        {/* Video background placeholder - add your video element here */}
+        <div className="absolute inset-0 -z-10 overflow-hidden">
+          {/* Add your video element here when you have it */}
         </div>
       </section>
 

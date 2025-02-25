@@ -1,8 +1,7 @@
 
 import { Button } from "./ui/button";
-import { Leaf, Menu } from "lucide-react";
+import { Menu, Truck } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
-import { cn } from "@/lib/utils";
 
 const Navigation = () => {
   const menuItems = [
@@ -13,10 +12,10 @@ const Navigation = () => {
   ];
 
   return (
-    <header className="fixed top-0 w-full bg-background/80 backdrop-blur-sm z-50 border-b">
+    <header className="fixed top-0 w-full bg-background/30 backdrop-blur-sm z-50">
       <div className="container flex h-16 items-center justify-between">
         <a href="/" className="flex items-center space-x-2">
-          <Leaf className="h-6 w-6 text-primary" />
+          <Truck className="h-6 w-6 text-primary" />
           <span className="font-semibold">SwachhGoa</span>
         </a>
 
