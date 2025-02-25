@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate, Link, Navigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -49,10 +48,10 @@ const Login = () => {
   // Helper function to show ID format hint
   const showIdFormatHint = () => {
     toast.info(
-      'ID Format Examples:\n' +
-      'Government: Goa1-001\n' +
-      'Municipality: Mun1-001\n' +
-      'Verification: Ver1-001',
+      'Valid ID Format Examples:\n' +
+      'For Government: GoaXX-XXX (e.g., Goa01-001)\n' +
+      'For Municipality: MunXX-XXX (e.g., Mun01-001)\n' +
+      'For Verification: VerXX-XXX (e.g., Ver01-001)',
       {
         duration: 5000,
       }
@@ -125,7 +124,7 @@ const Login = () => {
                 </label>
                 <Input
                   type="text"
-                  placeholder="Enter your ID (e.g., Goa1-001)"
+                  placeholder="Enter ID (e.g., Goa01-001)"
                   value={id}
                   onChange={(e) => setId(e.target.value)}
                   required
