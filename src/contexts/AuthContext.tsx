@@ -68,8 +68,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setUser({
           id: profile.id,
           role: profile.role,
-          name: profile.full_name || '',
-          organization: profile.organization || '',
+          name: profile.full_name || 'Unknown',
+          organization: profile.organization || 'Unknown',
           lastLogin: new Date().toISOString(),
         });
         return profile;
@@ -94,7 +94,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       } else if (id.toLowerCase().startsWith('ver')) {
         email = `${id}@verification.gov.in`;
       } else {
-        toast.error('Invalid ID format');
+        toast.error('Invalid ID format. Must start with Goa, Mun, or Ver');
         return false;
       }
 
