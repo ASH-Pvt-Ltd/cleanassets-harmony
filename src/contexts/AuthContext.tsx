@@ -45,7 +45,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const login = (id: string, password: string) => {
+    console.log('Attempting login with:', { id, password }); // Debug log
     const foundUser = mockUsers.find(u => u.id === id && u.password === password);
+    console.log('Found user:', foundUser); // Debug log
+    
     if (foundUser) {
       const userWithLogin = {
         ...foundUser,

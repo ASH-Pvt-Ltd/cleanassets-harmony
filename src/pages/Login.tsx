@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { toast } from 'sonner';
-import { Truck, ArrowLeft } from 'lucide-react';
+import { Truck, ArrowLeft, Info } from 'lucide-react';
 
 const Login = () => {
   const [id, setId] = useState('');
@@ -17,12 +17,36 @@ const Login = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (login(id, password)) {
-      toast.success('Login successful');
-      navigate('/dashboard');
-    } else {
-      toast.error('Invalid credentials');
+    // Show loading toast
+    const loadingToast = toast.loading('Signing in...');
+    
+    try {
+      if (login(id, password)) {
+        toast.dismiss(loadingToast);
+        toast.success('Login successful');
+        navigate('/dashboard');
+      } else {
+        toast.dismiss(loadingToast);
+        toast.error('Invalid credentials. Please check your ID and password.');
+      }
+    } catch (error) {
+      toast.dismiss(loadingToast);
+      toast.error('An error occurred. Please try again.');
+      console.error('Login error:', error);
     }
+  };
+
+  // Helper function to show ID format hint
+  const showIdFormatHint = () => {
+    toast.info(
+      'ID Format Examples:\n' +
+      'Government: Goa1-001\n' +
+      'Municipality: Mun1-001\n' +
+      'Verification: Ver1-001',
+      {
+        duration: 5000,
+      }
+    );
   };
 
   return (
@@ -77,10 +101,21 @@ const Login = () => {
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <label className="text-sm font-medium">User ID</label>
+                <label className="text-sm font-medium flex items-center justify-between">
+                  User ID
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="h-6 w-6 p-0"
+                    onClick={showIdFormatHint}
+                  >
+                    <Info className="h-4 w-4" />
+                  </Button>
+                </label>
                 <Input
                   type="text"
-                  placeholder="Enter your ID"
+                  placeholder="Enter your ID (e.g., Goa1-001)"
                   value={id}
                   onChange={(e) => setId(e.target.value)}
                   required
