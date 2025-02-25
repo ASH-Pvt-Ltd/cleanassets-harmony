@@ -5,6 +5,7 @@ import { Navigate } from 'react-router-dom';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import DashboardSidebar from './DashboardSidebar';
 import DashboardHeader from './DashboardHeader';
+import ChatbotButton from './ChatbotButton';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -33,6 +34,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
             {children}
           </main>
         </div>
+        <ChatbotButton />
       </div>
     </SidebarProvider>
   );
