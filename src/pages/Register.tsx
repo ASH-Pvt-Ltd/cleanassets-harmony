@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
-import { ArrowLeft, Truck } from 'lucide-react';
+import { ArrowLeft, Truck, Building2, Users2, ShieldCheck } from 'lucide-react';
 
 const Register = () => {
   const navigate = useNavigate();
@@ -33,12 +33,12 @@ const Register = () => {
 
       {/* Registration Card */}
       <div className="flex-1 flex items-center justify-center relative z-10">
-        <Card className="w-[320px] bg-white/80 backdrop-blur-sm">
+        <Card className="w-[380px] bg-white/80 backdrop-blur-sm">
           <CardHeader className="text-center">
             <div className="flex justify-center mb-4">
-              <Truck className="h-10 w-10 text-primary" />
+              <Truck className="h-12 w-12 text-primary" />
             </div>
-            <CardTitle className="text-xl">Register for SwachhGoa</CardTitle>
+            <CardTitle className="text-2xl">Register for SwachhGoa</CardTitle>
             <CardDescription>
               Choose your role to begin registration
             </CardDescription>
@@ -46,30 +46,42 @@ const Register = () => {
           <CardContent className="space-y-4">
             <Button 
               variant="outline" 
-              className="w-full text-left" 
+              className="w-full text-left flex items-center gap-3 h-auto py-4" 
               onClick={() => navigate('/login')}
             >
-              Government Officer (0551-xxx)
+              <Building2 className="h-5 w-5 text-primary shrink-0" />
+              <div className="flex flex-col items-start">
+                <span className="font-medium">Government Officer</span>
+                <span className="text-xs text-muted-foreground">ID Format: Goa1-XXX</span>
+              </div>
             </Button>
             <Button 
               variant="outline" 
-              className="w-full text-left"
+              className="w-full text-left flex items-center gap-3 h-auto py-4"
               onClick={() => navigate('/login')}
             >
-              Municipality/Panchayat Officer (0552-xxx)
+              <Users2 className="h-5 w-5 text-primary shrink-0" />
+              <div className="flex flex-col items-start">
+                <span className="font-medium">Municipality/Panchayat Officer</span>
+                <span className="text-xs text-muted-foreground">ID Format: Mun1-XXX</span>
+              </div>
             </Button>
             <Button 
               variant="outline" 
-              className="w-full text-left"
+              className="w-full text-left flex items-center gap-3 h-auto py-4"
               onClick={() => navigate('/login')}
             >
-              Verification Officer (0553-xxx)
+              <ShieldCheck className="h-5 w-5 text-primary shrink-0" />
+              <div className="flex flex-col items-start">
+                <span className="font-medium">Verification Officer</span>
+                <span className="text-xs text-muted-foreground">ID Format: Ver1-XXX</span>
+              </div>
             </Button>
           </CardContent>
           <CardFooter className="flex flex-col gap-3 text-center text-sm text-muted-foreground">
             <div>
               Already have an account? 
-              <Button variant="link" asChild>
+              <Button variant="link" asChild className="px-2">
                 <Link to="/login">Sign in</Link>
               </Button>
             </div>
