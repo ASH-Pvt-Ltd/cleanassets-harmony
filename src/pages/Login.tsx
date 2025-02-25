@@ -26,14 +26,25 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col relative">
-      {/* Background with gradient */}
+    <div className="min-h-screen flex flex-col relative overflow-hidden">
+      {/* Enhanced animated background */}
       <div className="absolute inset-0 bg-gradient-to-br from-green-50 via-blue-50 to-purple-50">
-        {/* Decorative elements */}
-        <div className="absolute inset-0 opacity-20">
-          <div className="absolute top-20 left-20 w-64 h-64 bg-primary/20 rounded-full mix-blend-multiply filter blur-xl animate-blob"></div>
-          <div className="absolute top-40 right-20 w-64 h-64 bg-purple-300/20 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-2000"></div>
-          <div className="absolute -bottom-8 left-40 w-64 h-64 bg-yellow-300/20 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-4000"></div>
+        <div className="absolute inset-0">
+          {/* Animated blobs */}
+          <div 
+            className="absolute top-1/4 left-1/4 w-72 h-72 bg-green-300/30 rounded-full mix-blend-multiply filter blur-xl animate-blob"
+            style={{ animation: 'blob 7s infinite' }}
+          ></div>
+          <div 
+            className="absolute top-1/3 right-1/4 w-72 h-72 bg-blue-300/30 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-2000"
+            style={{ animation: 'blob 8s infinite', animationDelay: '2s' }}
+          ></div>
+          <div 
+            className="absolute bottom-1/4 left-1/3 w-72 h-72 bg-purple-300/30 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-4000"
+            style={{ animation: 'blob 9s infinite', animationDelay: '4s' }}
+          ></div>
+          {/* Additional subtle floating particles */}
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/5 to-white/10"></div>
         </div>
       </div>
 
@@ -41,7 +52,7 @@ const Login = () => {
       <div className="relative z-10 p-4">
         <Button
           variant="ghost"
-          className="flex items-center gap-2 hover:bg-white/50"
+          className="flex items-center gap-2 hover:bg-white/50 transition-colors duration-200"
           onClick={() => navigate('/')}
         >
           <ArrowLeft className="h-4 w-4" />
@@ -51,14 +62,16 @@ const Login = () => {
 
       {/* Login Card */}
       <div className="flex-1 flex items-center justify-center relative z-10">
-        <Card className="w-[320px] bg-white/80 backdrop-blur-sm">
-          <CardHeader className="text-center">
-            <div className="flex justify-center mb-4">
-              <Truck className="h-10 w-10 text-primary" />
+        <Card className="w-[320px] bg-white/80 backdrop-blur-sm transition-all duration-300 hover:bg-white/90">
+          <CardHeader className="text-center space-y-2">
+            <div className="flex justify-center mb-2">
+              <Truck className="h-12 w-12 text-primary animate-bounce" />
             </div>
-            <CardTitle className="text-xl">Sign in to SwachhGoa</CardTitle>
+            <CardTitle className="text-2xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+              Welcome Back
+            </CardTitle>
             <CardDescription>
-              Enter your credentials
+              Sign in to continue to SwachhGoa
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -71,7 +84,7 @@ const Login = () => {
                   value={id}
                   onChange={(e) => setId(e.target.value)}
                   required
-                  className="bg-white/50"
+                  className="bg-white/50 transition-colors focus:bg-white"
                 />
               </div>
               <div className="space-y-2">
@@ -82,20 +95,27 @@ const Login = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="bg-white/50"
+                  className="bg-white/50 transition-colors focus:bg-white"
                 />
               </div>
-              <Button type="submit" className="w-full">
+              <Button type="submit" className="w-full transition-transform hover:scale-[1.02]">
                 Sign In
               </Button>
             </form>
           </CardContent>
-          <CardFooter className="flex flex-col gap-3 text-center text-sm text-muted-foreground">
-            <div>
-              Need access? Contact administrator
+          <CardFooter className="flex flex-col gap-4 text-center">
+            <div className="text-sm">
+              New to SwachhGoa?{' '}
+              <Button 
+                variant="link" 
+                asChild 
+                className="px-1 font-semibold text-primary hover:text-primary/80 transition-colors"
+              >
+                <Link to="/register">Create an account</Link>
+              </Button>
             </div>
-            <div className="text-xs">
-              Admin: 0551-xxx | Supervisor: 0552-xxx
+            <div className="text-xs text-muted-foreground">
+              Need help? Contact administrator
             </div>
           </CardFooter>
         </Card>
