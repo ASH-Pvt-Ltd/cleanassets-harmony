@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate, Link, Navigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
@@ -11,9 +11,9 @@ import { Truck, ArrowLeft, Info } from 'lucide-react';
 const Login = () => {
   const [id, setId] = useState('');
   const [password, setPassword] = useState('');
-  const { login, user } = useAuth();
+  const [submitting, setSubmitting] = useState(false);
+  const { login, user, isLoading } = useAuth();
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(false);
 
   // Redirect if already logged in
   if (user) {
@@ -22,21 +22,21 @@ const Login = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
     
+    if (submitting) return; // Prevent multiple submissions
+    
+    setSubmitting(true);
     try {
       const success = await login(id, password);
       
-      if (success) {
-        toast.success('Login successful');
-      } else {
-        toast.error('Invalid credentials. Please check your ID and password.');
+      if (!success) {
+        toast.error('Login failed. Please check your credentials.');
       }
     } catch (error) {
-      toast.error('An error occurred. Please try again.');
       console.error('Login error:', error);
+      toast.error('An error occurred during login. Please try again.');
     } finally {
-      setIsLoading(false);
+      setSubmitting(false);
     }
   };
 
@@ -55,10 +55,9 @@ const Login = () => {
 
   return (
     <div className="min-h-screen flex flex-col relative overflow-hidden">
-      {/* Enhanced animated background */}
+      {/* Background with animated blobs */}
       <div className="absolute inset-0 bg-gradient-to-br from-green-50 via-blue-50 to-purple-50">
         <div className="absolute inset-0">
-          {/* Animated blobs */}
           <div 
             className="absolute top-1/4 left-1/4 w-72 h-72 bg-green-300/30 rounded-full mix-blend-multiply filter blur-xl animate-blob"
             style={{ animation: 'blob 7s infinite' }}
@@ -71,7 +70,6 @@ const Login = () => {
             className="absolute bottom-1/4 left-1/3 w-72 h-72 bg-purple-300/30 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-4000"
             style={{ animation: 'blob 9s infinite', animationDelay: '4s' }}
           ></div>
-          {/* Additional subtle floating particles */}
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/5 to-white/10"></div>
         </div>
       </div>
@@ -123,7 +121,7 @@ const Login = () => {
                   value={id}
                   onChange={(e) => setId(e.target.value)}
                   required
-                  disabled={isLoading}
+                  disabled={submitting}
                   className="bg-white/50 transition-colors focus:bg-white"
                 />
               </div>
@@ -135,16 +133,16 @@ const Login = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  disabled={isLoading}
+                  disabled={submitting}
                   className="bg-white/50 transition-colors focus:bg-white"
                 />
               </div>
               <Button 
                 type="submit" 
                 className="w-full transition-transform hover:scale-[1.02]"
-                disabled={isLoading}
+                disabled={submitting}
               >
-                {isLoading ? 'Signing in...' : 'Sign In'}
+                {submitting ? 'Signing in...' : 'Sign In'}
               </Button>
             </form>
           </CardContent>

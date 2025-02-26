@@ -85,7 +85,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         .single();
 
       if (error || !profile) {
-        throw error || new Error('Profile not found');
+        console.error('Profile fetch error:', error || 'Profile not found');
+        return null;
       }
 
       const role = determineRole(authUser.email);
@@ -101,29 +102,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       return profile;
     } catch (error) {
       console.error('Error fetching user profile:', error);
-      toast.error('Error fetching user profile');
       return null;
     }
   };
 
   const login = async (id: string, password: string): Promise<boolean> => {
-    setIsLoading(true);
     try {
       let email = '';
-      let role: Role;
 
       if (id.toLowerCase().startsWith('goa')) {
         email = `${id}@goa.gov.in`;
-        role = 'government';
       } else if (id.toLowerCase().startsWith('mun')) {
         email = `${id}@municipality.gov.in`;
-        role = 'municipality';
       } else if (id.toLowerCase().startsWith('ver')) {
         email = `${id}@verification.gov.in`;
-        role = 'verification';
       } else {
         toast.error('Invalid ID format. Must start with Goa, Mun, or Ver');
-        setIsLoading(false);
         return false;
       }
 
@@ -135,52 +129,36 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (error) {
         console.error('Login error:', error.message);
         toast.error(error.message);
-        setIsLoading(false);
         return false;
       }
 
       if (data.user) {
-        const { error: updateError } = await supabase
-          .from('profiles')
-          .update({ role: role })
-          .eq('id', data.user.id);
-
-        if (updateError) {
-          console.error('Error updating role:', updateError);
-        }
-
         const profile = await fetchUserProfile(data.user.id);
         if (profile) {
-          setIsLoading(false);
           navigate('/dashboard');
           return true;
         }
       }
 
-      setIsLoading(false);
       return false;
     } catch (error) {
       console.error('Login error:', error);
       toast.error('An error occurred during login');
-      setIsLoading(false);
       return false;
     }
   };
 
   const logout = async () => {
     try {
-      setIsLoading(true);
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
       
       setUser(null);
-      toast.success('Successfully logged out');
       navigate('/', { replace: true });
+      toast.success('Successfully logged out');
     } catch (error) {
       console.error('Logout error:', error);
       toast.error('An error occurred during logout');
-    } finally {
-      setIsLoading(false);
     }
   };
 
