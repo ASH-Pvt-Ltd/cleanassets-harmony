@@ -32,7 +32,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Check active session
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
-        fetchUserProfile(session.user.id);
+        fetchUserProfile(session.user.id, session.user.email);
       } else {
         setIsLoading(false);
       }
@@ -43,7 +43,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (_event, session) => {
       if (session) {
-        await fetchUserProfile(session.user.id);
+        await fetchUserProfile(session.user.id, session.user.email);
       } else {
         setUser(null);
       }
@@ -53,7 +53,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => subscription.unsubscribe();
   }, []);
 
-  const fetchUserProfile = async (userId: string) => {
+  const determineRole = (email: string | undefined): Role => {
+    if (!email) return 'verification'; // Default role
+    if (email.includes('@goa.gov.in')) return 'government';
+    if (email.includes('@municipality.gov.in')) return 'municipality';
+    if (email.includes('@verification.gov.in')) return 'verification';
+    return 'verification'; // Default role if no match
+  };
+
+  const fetchUserProfile = async (userId: string, email: string | undefined) => {
     try {
       const { data: profile, error } = await supabase
         .from('profiles')
@@ -66,17 +74,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
 
       if (profile) {
-        // Ensure role is properly set based on email domain
-        let role: Role;
-        if (profile.email?.includes('@goa.gov.in')) {
-          role = 'government';
-        } else if (profile.email?.includes('@municipality.gov.in')) {
-          role = 'municipality';
-        } else if (profile.email?.includes('@verification.gov.in')) {
-          role = 'verification';
-        } else {
-          role = profile.role as Role;
-        }
+        // Determine role based on email domain
+        const role = determineRole(email);
 
         setUser({
           id: profile.id,
@@ -138,7 +137,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           console.error('Error updating role:', updateError);
         }
 
-        const profile = await fetchUserProfile(data.user.id);
+        const profile = await fetchUserProfile(data.user.id, email);
         if (profile) {
           navigate('/dashboard');
           return true;
