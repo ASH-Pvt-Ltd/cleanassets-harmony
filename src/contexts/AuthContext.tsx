@@ -30,20 +30,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     // Check active session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) {
-        fetchUserProfile(session.user.id, session.user.email);
-      } else {
+    const initializeAuth = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session) {
+          await fetchUserProfile(session.user.id);
+        }
+      } catch (error) {
+        console.error('Error checking auth session:', error);
+      } finally {
         setIsLoading(false);
       }
-    });
+    };
+
+    initializeAuth();
 
     // Listen for auth changes
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (_event, session) => {
       if (session) {
-        await fetchUserProfile(session.user.id, session.user.email);
+        await fetchUserProfile(session.user.id);
       } else {
         setUser(null);
       }
@@ -54,15 +61,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const determineRole = (email: string | undefined): Role => {
-    if (!email) return 'verification'; // Default role
+    if (!email) return 'verification';
     if (email.includes('@goa.gov.in')) return 'government';
     if (email.includes('@municipality.gov.in')) return 'municipality';
     if (email.includes('@verification.gov.in')) return 'verification';
-    return 'verification'; // Default role if no match
+    return 'verification';
   };
 
-  const fetchUserProfile = async (userId: string, email: string | undefined) => {
+  const fetchUserProfile = async (userId: string) => {
     try {
+      const { data: { user: authUser } } = await supabase.auth.getUser();
+      
+      if (!authUser) {
+        setUser(null);
+        return null;
+      }
+
       const { data: profile, error } = await supabase
         .from('profiles')
         .select('*')
@@ -74,11 +88,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
 
       if (profile) {
-        // Determine role based on email domain
-        const role = determineRole(email);
-
+        const role = determineRole(authUser.email);
+        
         setUser({
-          id: email || userId, // Store the email as the ID
+          id: authUser.email || userId,
           role: role,
           name: profile.full_name || 'Unknown',
           organization: profile.organization || 'Unknown',
@@ -97,7 +110,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const login = async (id: string, password: string): Promise<boolean> => {
     try {
-      // Convert the ID format to email format for Supabase
       let email = '';
       let role: Role;
 
@@ -127,7 +139,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
 
       if (data.user) {
-        // Update the user's role in the profiles table if needed
         const { error: updateError } = await supabase
           .from('profiles')
           .update({ role: role })
@@ -137,7 +148,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           console.error('Error updating role:', updateError);
         }
 
-        const profile = await fetchUserProfile(data.user.id, email);
+        const profile = await fetchUserProfile(data.user.id);
         if (profile) {
           navigate('/dashboard');
           return true;
