@@ -21,6 +21,9 @@ const DashboardHeader = () => {
     navigate('/', { replace: true }); // Redirect to home page after logout
   };
 
+  // Extract user ID from email (e.g., "goa01-001@goa.gov.in" -> "Goa01-001")
+  const displayId = user?.id ? user.id.split('@')[0].charAt(0).toUpperCase() + user.id.split('@')[0].slice(1) : '';
+
   return (
     <header className="border-b bg-white px-6 py-3">
       <div className="flex items-center justify-end">
@@ -28,7 +31,7 @@ const DashboardHeader = () => {
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="flex items-center gap-2">
               <User className="h-4 w-4" />
-              <span>{user?.name}</span>
+              <span>{displayId}</span>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-56">
