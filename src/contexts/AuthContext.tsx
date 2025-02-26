@@ -2,12 +2,18 @@
 import React, { createContext, useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-import { AuthContextType, User } from '@/types/auth';
+import { AuthContextType, User, Role } from '@/types/auth';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Simulated user database
-const MOCK_USERS = {
+// Simulated user database with proper Role type
+const MOCK_USERS: Record<string, {
+  id: string;
+  password: string;
+  name: string;
+  role: Role;
+  organization: string;
+}> = {
   'Goa01-001': {
     id: 'Goa01-001',
     password: 'password123',
@@ -45,7 +51,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       // Simulate API delay
       await new Promise(resolve => setTimeout(resolve, 500));
 
-      const mockUser = MOCK_USERS[id as keyof typeof MOCK_USERS];
+      const mockUser = MOCK_USERS[id];
       
       if (!mockUser || mockUser.password !== password) {
         toast.error('Invalid credentials');
@@ -76,7 +82,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const determineRoleDisplayName = (role: string): string => {
+  const determineRoleDisplayName = (role: Role): string => {
     switch (role) {
       case 'government':
         return 'Government';
