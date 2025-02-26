@@ -1,108 +1,99 @@
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { AuthContextType, User } from '@/types/auth';
-import { fetchUserProfile, signIn } from '@/utils/auth';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+// Simulated user database
+const MOCK_USERS = {
+  'Goa01-001': {
+    id: 'Goa01-001',
+    password: 'password123',
+    name: 'John Government',
+    role: 'government',
+    organization: 'Goa Government'
+  },
+  'Mun01-001': {
+    id: 'Mun01-001',
+    password: 'password123',
+    name: 'Mary Municipality',
+    role: 'municipality',
+    organization: 'North Goa Municipality'
+  },
+  'Ver01-001': {
+    id: 'Ver01-001',
+    password: 'password123',
+    name: 'Victor Verifier',
+    role: 'verification',
+    organization: 'Verification Department'
+  }
+};
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [user, setUser] = useState<User | null>(() => {
+    const savedUser = localStorage.getItem('user');
+    return savedUser ? JSON.parse(savedUser) : null;
+  });
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const initializeAuth = async () => {
-      try {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (session) {
-          await fetchUserProfile(session.user.id, setUser);
-        } else {
-          setUser(null);
-        }
-      } catch (error) {
-        console.error('Auth initialization error:', error);
-        setUser(null);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    initializeAuth();
-
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      try {
-        if (session) {
-          await fetchUserProfile(session.user.id, setUser);
-        } else {
-          setUser(null);
-        }
-      } catch (error) {
-        console.error('Auth state change error:', error);
-        setUser(null);
-      } finally {
-        setIsLoading(false);
-      }
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
 
   const login = async (id: string, password: string): Promise<boolean> => {
     setIsLoading(true);
     try {
-      const email = await signIn(id);
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 500));
 
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-
-      if (error) {
-        console.error('Login error:', error.message);
-        toast.error(error.message);
+      const mockUser = MOCK_USERS[id as keyof typeof MOCK_USERS];
+      
+      if (!mockUser || mockUser.password !== password) {
+        toast.error('Invalid credentials');
         return false;
       }
 
-      if (data.user) {
-        const profile = await fetchUserProfile(data.user.id, setUser);
-        if (profile) {
-          const role = determineRoleDisplayName(data.user.email);
-          toast.success(`Welcome to the ${role} Portal`);
-          navigate('/dashboard', { replace: true });
-          return true;
-        }
-      }
+      const userData: User = {
+        id: mockUser.id,
+        name: mockUser.name,
+        role: mockUser.role,
+        organization: mockUser.organization,
+        lastLogin: new Date().toISOString()
+      };
 
-      toast.error('Failed to load user profile');
-      return false;
+      setUser(userData);
+      localStorage.setItem('user', JSON.stringify(userData));
+      
+      const portalName = determineRoleDisplayName(userData.role);
+      toast.success(`Welcome to the ${portalName} Portal`);
+      navigate('/dashboard', { replace: true });
+      return true;
     } catch (error) {
       console.error('Login error:', error);
-      toast.error(error instanceof Error ? error.message : 'An error occurred during login');
+      toast.error('An error occurred during login');
       return false;
     } finally {
       setIsLoading(false);
     }
   };
 
-  const determineRoleDisplayName = (email?: string): string => {
-    if (!email) return 'Verification';
-    if (email.includes('@goa.gov.in')) return 'Government';
-    if (email.includes('@municipality.gov.in')) return 'Municipality';
-    if (email.includes('@verification.gov.in')) return 'Verification';
-    return 'Verification';
+  const determineRoleDisplayName = (role: string): string => {
+    switch (role) {
+      case 'government':
+        return 'Government';
+      case 'municipality':
+        return 'Municipality';
+      case 'verification':
+        return 'Verification';
+      default:
+        return 'Verification';
+    }
   };
 
   const logout = async () => {
     setIsLoading(true);
     try {
-      const { error } = await supabase.auth.signOut();
-      if (error) throw error;
-      
+      await new Promise(resolve => setTimeout(resolve, 300)); // Simulate logout delay
+      localStorage.removeItem('user');
       setUser(null);
       navigate('/', { replace: true });
       toast.success('Successfully logged out');
