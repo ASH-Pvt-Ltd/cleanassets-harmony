@@ -22,7 +22,9 @@ const DashboardHeader = () => {
   };
 
   // Extract user ID from email (e.g., "goa01-001@goa.gov.in" -> "Goa01-001")
-  const displayId = user?.id ? user.id.split('@')[0].charAt(0).toUpperCase() + user.id.split('@')[0].slice(1) : '';
+  const displayId = user?.id.includes('@') 
+    ? user.id.split('@')[0].charAt(0).toUpperCase() + user.id.split('@')[0].slice(1)
+    : user?.id?.split('-')[0] || '';
 
   return (
     <header className="border-b bg-white px-6 py-3">
