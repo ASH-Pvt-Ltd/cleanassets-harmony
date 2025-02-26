@@ -17,7 +17,7 @@ const Index = () => {
       icon: Building2,
     },
     {
-      title: "Facilities",
+      title: "Facilities", 
       description: "Collection Centers, Treatment Centers, Storage Units",
       icon: ClipboardCheck,
     },
@@ -144,49 +144,54 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Asset Categories Section */}
+      {/* Asset Categories and Map Section */}
       <section className="py-20 bg-secondary/30">
         <div className="container px-4">
-          <div className="text-center max-w-2xl mx-auto mb-12">
-            <h2 className="text-3xl font-bold mb-4">Comprehensive Asset Management</h2>
-            <p className="text-muted-foreground">
-              Track and manage various categories of waste management assets across Goa
-            </p>
-          </div>
-          
-          <div className="grid md:grid-cols-3 gap-8">
-            {assetCategories.map((category) => (
-              <Card key={category.title} className="transition-all hover:shadow-lg">
-                <CardHeader>
-                  <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
-                    <category.icon className="w-6 h-6 text-primary" />
-                  </div>
-                  <CardTitle>{category.title}</CardTitle>
-                  <CardDescription>{category.description}</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Button variant="secondary" className="w-full" asChild>
-                    <Link to={user ? "/dashboard" : "/login"}>
-                      {user ? "View Details" : "Sign in to View"}
-                    </Link>
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* Asset Categories */}
+            <div className="space-y-8">
+              <div className="text-left">
+                <h2 className="text-3xl font-bold mb-4">Comprehensive Asset Management</h2>
+                <p className="text-muted-foreground">
+                  Track and manage various categories of waste management assets across Goa
+                </p>
+              </div>
+              
+              <div className="grid gap-6">
+                {assetCategories.map((category) => (
+                  <Card key={category.title} className="transition-all hover:shadow-lg">
+                    <CardHeader>
+                      <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
+                        <category.icon className="w-6 h-6 text-primary" />
+                      </div>
+                      <CardTitle>{category.title}</CardTitle>
+                      <CardDescription>{category.description}</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <Button variant="secondary" className="w-full" asChild>
+                        <Link to={user ? "/dashboard" : "/login"}>
+                          {user ? "View Details" : "Sign in to View"}
+                        </Link>
+                      </Button>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
 
-      {/* Map Section */}
-      <section className="py-20">
-        <div className="container px-4">
-          <div className="text-center max-w-2xl mx-auto mb-12">
-            <h2 className="text-3xl font-bold mb-4">Asset Distribution Map</h2>
-            <p className="text-muted-foreground">
-              Explore waste management assets across Goa
-            </p>
+            {/* Map Section */}
+            <div className="space-y-6">
+              <div className="text-left">
+                <h2 className="text-3xl font-bold mb-4">Asset Distribution Map</h2>
+                <p className="text-muted-foreground">
+                  Explore waste management assets across Goa
+                </p>
+              </div>
+              <div className="h-full min-h-[600px] rounded-lg overflow-hidden shadow-lg">
+                <Map />
+              </div>
+            </div>
           </div>
-          <Map />
         </div>
       </section>
 
