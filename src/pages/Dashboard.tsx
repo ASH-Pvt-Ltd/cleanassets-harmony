@@ -55,6 +55,7 @@ const Dashboard = () => {
   }
 
   const getDashboardContent = () => {
+    // First check the user's role and show appropriate dashboard
     switch (user.role) {
       case 'government':
         return (
@@ -210,6 +211,7 @@ const Dashboard = () => {
         );
 
       default:
+        // If somehow the role is invalid, redirect to login
         return <Navigate to="/login" replace />;
     }
   };
@@ -222,7 +224,7 @@ const Dashboard = () => {
             Welcome back, {user.name}
           </h2>
           <p className="text-muted-foreground">
-            Here's an overview of your dashboard
+            Here's an overview of your {user.role} dashboard
           </p>
         </div>
         <div className="relative">
