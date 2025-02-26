@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link, Navigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
@@ -23,21 +24,15 @@ const Login = () => {
     e.preventDefault();
     setIsLoading(true);
     
-    // Show loading toast
-    const loadingToast = toast.loading('Signing in...');
-    
     try {
       const success = await login(id, password);
-      toast.dismiss(loadingToast);
       
       if (success) {
         toast.success('Login successful');
-        navigate('/dashboard', { replace: true });
       } else {
         toast.error('Invalid credentials. Please check your ID and password.');
       }
     } catch (error) {
-      toast.dismiss(loadingToast);
       toast.error('An error occurred. Please try again.');
       console.error('Login error:', error);
     } finally {
