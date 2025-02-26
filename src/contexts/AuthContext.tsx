@@ -18,11 +18,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       try {
         const { data: { session } } = await supabase.auth.getSession();
         if (session) {
-          const profile = await fetchUserProfile(session.user.id, setUser);
-          if (!profile) {
-            setUser(null);
-          }
+          await fetchUserProfile(session.user.id, setUser);
+        } else {
+          setUser(null);
         }
+      } catch (error) {
+        console.error('Auth initialization error:', error);
+        setUser(null);
       } finally {
         setIsLoading(false);
       }
@@ -33,21 +35,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      if (session) {
-        const profile = await fetchUserProfile(session.user.id, setUser);
-        if (!profile) {
+      try {
+        if (session) {
+          await fetchUserProfile(session.user.id, setUser);
+        } else {
           setUser(null);
         }
-      } else {
+      } catch (error) {
+        console.error('Auth state change error:', error);
         setUser(null);
+      } finally {
+        setIsLoading(false);
       }
-      setIsLoading(false);
     });
 
     return () => subscription.unsubscribe();
   }, []);
 
   const login = async (id: string, password: string): Promise<boolean> => {
+    setIsLoading(true);
     try {
       const email = await signIn(id);
 
@@ -65,18 +71,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (data.user) {
         const profile = await fetchUserProfile(data.user.id, setUser);
         if (profile) {
-          // Navigate before showing the toast to improve perceived performance
+          const role = determineRoleDisplayName(data.user.email);
+          toast.success(`Welcome to the ${role} Portal`);
           navigate('/dashboard', { replace: true });
-          toast.success(`Welcome to the ${determineRoleDisplayName(data.user.email)} Portal`);
           return true;
         }
       }
 
+      toast.error('Failed to load user profile');
       return false;
     } catch (error) {
       console.error('Login error:', error);
       toast.error(error instanceof Error ? error.message : 'An error occurred during login');
       return false;
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -89,8 +98,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const logout = async () => {
+    setIsLoading(true);
     try {
-      setIsLoading(true);  // Set loading state before logout
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
       
@@ -101,7 +110,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       console.error('Logout error:', error);
       toast.error('An error occurred during logout');
     } finally {
-      setIsLoading(false);  // Reset loading state
+      setIsLoading(false);
     }
   };
 

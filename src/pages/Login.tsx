@@ -80,6 +80,7 @@ const Login = () => {
           variant="ghost"
           className="flex items-center gap-2 hover:bg-white/50 transition-colors duration-200"
           onClick={() => navigate('/')}
+          disabled={submitting}
         >
           <ArrowLeft className="h-4 w-4" />
           Back to Home
@@ -111,6 +112,7 @@ const Login = () => {
                     size="sm"
                     className="h-6 w-6 p-0"
                     onClick={showIdFormatHint}
+                    disabled={submitting}
                   >
                     <Info className="h-4 w-4" />
                   </Button>
@@ -153,6 +155,7 @@ const Login = () => {
                 variant="link" 
                 asChild 
                 className="px-1 font-semibold text-primary hover:text-primary/80 transition-colors"
+                disabled={submitting}
               >
                 <Link to="/register">Create an account</Link>
               </Button>
