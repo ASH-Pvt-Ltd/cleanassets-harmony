@@ -65,7 +65,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (data.user) {
         const profile = await fetchUserProfile(data.user.id, setUser);
         if (profile) {
-          // Role-based redirection
+          // Navigate before showing the toast to improve perceived performance
           navigate('/dashboard', { replace: true });
           toast.success(`Welcome to the ${determineRoleDisplayName(data.user.email)} Portal`);
           return true;
@@ -90,6 +90,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const logout = async () => {
     try {
+      setIsLoading(true);  // Set loading state before logout
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
       
@@ -99,6 +100,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } catch (error) {
       console.error('Logout error:', error);
       toast.error('An error occurred during logout');
+    } finally {
+      setIsLoading(false);  // Reset loading state
     }
   };
 
