@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Building2, ClipboardCheck, Truck, Target } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -79,8 +80,8 @@ const Index = () => {
               Government of Goa Initiative
             </div>
             <h1 className="text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
-              Asset Management System for{" "}
-              <span className="text-primary">Waste Management</span>
+              Transforming Goa's Future Through{" "}
+              <span className="text-primary">Smart Waste Management</span>
             </h1>
             <p className="text-2xl font-medium text-muted-foreground mt-4">
               Track. Manage. Sustain – Goa's Smart Waste Solution!
