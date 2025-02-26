@@ -26,6 +26,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Check active session
@@ -58,16 +59,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         .from('profiles')
         .select('*')
         .eq('id', userId)
-        .maybeSingle();
+        .single();
 
       if (error) {
         throw error;
       }
 
       if (profile) {
+        // Ensure role is properly set based on email domain
+        let role: Role;
+        if (profile.email?.includes('@goa.gov.in')) {
+          role = 'government';
+        } else if (profile.email?.includes('@municipality.gov.in')) {
+          role = 'municipality';
+        } else if (profile.email?.includes('@verification.gov.in')) {
+          role = 'verification';
+        } else {
+          role = profile.role as Role;
+        }
+
         setUser({
           id: profile.id,
-          role: profile.role,
+          role: role,
           name: profile.full_name || 'Unknown',
           organization: profile.organization || 'Unknown',
           lastLogin: new Date().toISOString(),
@@ -87,12 +100,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       // Convert the ID format to email format for Supabase
       let email = '';
+      let role: Role;
+
       if (id.toLowerCase().startsWith('goa')) {
         email = `${id}@goa.gov.in`;
+        role = 'government';
       } else if (id.toLowerCase().startsWith('mun')) {
         email = `${id}@municipality.gov.in`;
+        role = 'municipality';
       } else if (id.toLowerCase().startsWith('ver')) {
         email = `${id}@verification.gov.in`;
+        role = 'verification';
       } else {
         toast.error('Invalid ID format. Must start with Goa, Mun, or Ver');
         return false;
@@ -110,8 +128,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
 
       if (data.user) {
+        // Update the user's role in the profiles table if needed
+        const { error: updateError } = await supabase
+          .from('profiles')
+          .update({ role: role })
+          .eq('id', data.user.id);
+
+        if (updateError) {
+          console.error('Error updating role:', updateError);
+        }
+
         const profile = await fetchUserProfile(data.user.id);
-        return !!profile;
+        if (profile) {
+          navigate('/dashboard');
+          return true;
+        }
       }
 
       return false;
@@ -129,6 +160,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       
       setUser(null);
       toast.success('Successfully logged out');
+      navigate('/', { replace: true });
       
     } catch (error) {
       console.error('Logout error:', error);
