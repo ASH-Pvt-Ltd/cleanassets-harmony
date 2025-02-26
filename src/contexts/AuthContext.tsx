@@ -78,7 +78,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const role = determineRole(email);
 
         setUser({
-          id: profile.id,
+          id: email || userId, // Store the email as the ID
           role: role,
           name: profile.full_name || 'Unknown',
           organization: profile.organization || 'Unknown',
