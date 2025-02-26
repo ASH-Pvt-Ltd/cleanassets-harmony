@@ -29,15 +29,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Check active session
     const initializeAuth = async () => {
       try {
         const { data: { session } } = await supabase.auth.getSession();
         if (session) {
-          await fetchUserProfile(session.user.id);
+          const profile = await fetchUserProfile(session.user.id);
+          if (!profile) {
+            setUser(null);
+          }
         }
-      } catch (error) {
-        console.error('Error checking auth session:', error);
       } finally {
         setIsLoading(false);
       }
@@ -45,12 +45,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     initializeAuth();
 
-    // Listen for auth changes
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (_event, session) => {
       if (session) {
-        await fetchUserProfile(session.user.id);
+        const profile = await fetchUserProfile(session.user.id);
+        if (!profile) {
+          setUser(null);
+        }
       } else {
         setUser(null);
       }
@@ -73,7 +75,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const { data: { user: authUser } } = await supabase.auth.getUser();
       
       if (!authUser) {
-        setUser(null);
         return null;
       }
 
@@ -83,24 +84,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         .eq('id', userId)
         .single();
 
-      if (error) {
-        throw error;
+      if (error || !profile) {
+        throw error || new Error('Profile not found');
       }
 
-      if (profile) {
-        const role = determineRole(authUser.email);
-        
-        setUser({
-          id: authUser.email || userId,
-          role: role,
-          name: profile.full_name || 'Unknown',
-          organization: profile.organization || 'Unknown',
-          lastLogin: new Date().toISOString(),
-        });
-        return profile;
-      } else {
-        throw new Error('Profile not found');
-      }
+      const role = determineRole(authUser.email);
+      const userData = {
+        id: authUser.email || userId,
+        role: role,
+        name: profile.full_name || 'Unknown',
+        organization: profile.organization || 'Unknown',
+        lastLogin: new Date().toISOString(),
+      };
+      
+      setUser(userData);
+      return profile;
     } catch (error) {
       console.error('Error fetching user profile:', error);
       toast.error('Error fetching user profile');
@@ -109,6 +107,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const login = async (id: string, password: string): Promise<boolean> => {
+    setIsLoading(true);
     try {
       let email = '';
       let role: Role;
@@ -124,6 +123,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         role = 'verification';
       } else {
         toast.error('Invalid ID format. Must start with Goa, Mun, or Ver');
+        setIsLoading(false);
         return false;
       }
 
@@ -135,6 +135,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (error) {
         console.error('Login error:', error.message);
         toast.error(error.message);
+        setIsLoading(false);
         return false;
       }
 
@@ -150,31 +151,36 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
         const profile = await fetchUserProfile(data.user.id);
         if (profile) {
+          setIsLoading(false);
           navigate('/dashboard');
           return true;
         }
       }
 
+      setIsLoading(false);
       return false;
     } catch (error) {
       console.error('Login error:', error);
       toast.error('An error occurred during login');
+      setIsLoading(false);
       return false;
     }
   };
 
   const logout = async () => {
     try {
+      setIsLoading(true);
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
       
       setUser(null);
       toast.success('Successfully logged out');
       navigate('/', { replace: true });
-      
     } catch (error) {
       console.error('Logout error:', error);
       toast.error('An error occurred during logout');
+    } finally {
+      setIsLoading(false);
     }
   };
 
