@@ -65,7 +65,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (data.user) {
         const profile = await fetchUserProfile(data.user.id, setUser);
         if (profile) {
-          navigate('/dashboard');
+          // Role-based redirection
+          navigate('/dashboard', { replace: true });
+          toast.success(`Welcome to the ${determineRoleDisplayName(data.user.email)} Portal`);
           return true;
         }
       }
@@ -76,6 +78,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       toast.error(error instanceof Error ? error.message : 'An error occurred during login');
       return false;
     }
+  };
+
+  const determineRoleDisplayName = (email?: string): string => {
+    if (!email) return 'Verification';
+    if (email.includes('@goa.gov.in')) return 'Government';
+    if (email.includes('@municipality.gov.in')) return 'Municipality';
+    if (email.includes('@verification.gov.in')) return 'Verification';
+    return 'Verification';
   };
 
   const logout = async () => {
