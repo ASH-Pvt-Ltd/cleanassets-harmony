@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
@@ -27,33 +27,35 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <AuthProvider>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/dashboard/infrastructure" element={<Infrastructure />} />
-            <Route path="/dashboard/assets" element={<Assets />} />
-            <Route path="/dashboard/fleet" element={<Fleet />} />
-            <Route path="/dashboard/approvals" element={<Approvals />} />
-            <Route path="/dashboard/reports" element={<Reports />} />
-            <Route path="/dashboard/queries" element={<Queries />} />
-            <Route path="/dashboard/settings" element={<Settings />} />
-            <Route path="/dashboard/help" element={<Help />} />
-            <Route path="/dashboard/requests" element={<Requests />} />
-            <Route path="/dashboard/pending" element={<Pending />} />
-            <Route path="/dashboard/verified" element={<Verified />} />
-            <Route path="/dashboard/rejected" element={<Rejected />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
-    </AuthProvider>
+    <BrowserRouter>
+      <AuthProvider>
+        <TooltipProvider>
+          <div className="min-h-screen bg-background">
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/dashboard/infrastructure" element={<Infrastructure />} />
+              <Route path="/dashboard/assets" element={<Assets />} />
+              <Route path="/dashboard/fleet" element={<Fleet />} />
+              <Route path="/dashboard/approvals" element={<Approvals />} />
+              <Route path="/dashboard/reports" element={<Reports />} />
+              <Route path="/dashboard/queries" element={<Queries />} />
+              <Route path="/dashboard/settings" element={<Settings />} />
+              <Route path="/dashboard/help" element={<Help />} />
+              <Route path="/dashboard/requests" element={<Requests />} />
+              <Route path="/dashboard/pending" element={<Pending />} />
+              <Route path="/dashboard/verified" element={<Verified />} />
+              <Route path="/dashboard/rejected" element={<Rejected />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+            <Toaster />
+            <Sonner />
+          </div>
+        </TooltipProvider>
+      </AuthProvider>
+    </BrowserRouter>
   </QueryClientProvider>
 );
 
