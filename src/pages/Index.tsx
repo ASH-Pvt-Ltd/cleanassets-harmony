@@ -159,56 +159,57 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Asset Categories and Map Section */}
+      {/* Asset Categories Section */}
+      <section className="py-20">
+        <div className="container px-4">
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <h2 className="text-3xl font-bold mb-4">Comprehensive Asset Management</h2>
+            <p className="text-muted-foreground">
+              Track and manage various categories of waste management assets across Goa
+            </p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-8">
+            {assetCategories.map((category) => (
+              <Card key={category.title} className="transition-all hover:shadow-lg">
+                <CardHeader>
+                  <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
+                    <category.icon className="w-6 h-6 text-primary" />
+                  </div>
+                  <CardTitle>{category.title}</CardTitle>
+                  <CardDescription>{category.description}</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Button variant="secondary" className="w-full" asChild>
+                    <Link to={user ? "/dashboard" : "/login"}>
+                      {user ? "View Details" : "Sign in to View"}
+                    </Link>
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Why Implement and Map Section */}
       <section className="py-20 bg-secondary/30">
         <div className="container px-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            {/* Left Column - Asset Categories and Why Implement */}
-            <div className="space-y-12">
-              {/* Asset Categories */}
-              <div>
-                <h2 className="text-3xl font-bold mb-4">Comprehensive Asset Management</h2>
-                <p className="text-muted-foreground mb-8">
-                  Track and manage various categories of waste management assets across Goa
-                </p>
-                <div className="grid gap-6">
-                  {assetCategories.map((category) => (
-                    <Card key={category.title} className="transition-all hover:shadow-lg">
-                      <CardHeader>
-                        <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
-                          <category.icon className="w-6 h-6 text-primary" />
-                        </div>
-                        <CardTitle>{category.title}</CardTitle>
-                        <CardDescription>{category.description}</CardDescription>
-                      </CardHeader>
-                      <CardContent>
-                        <Button variant="secondary" className="w-full" asChild>
-                          <Link to={user ? "/dashboard" : "/login"}>
-                            {user ? "View Details" : "Sign in to View"}
-                          </Link>
-                        </Button>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              </div>
-
-              {/* Why Implement Section */}
-              <div>
-                <h2 className="text-3xl font-bold mb-4">Why Implement an Asset Management Platform?</h2>
-                <p className="text-muted-foreground mb-8">
-                  Given the extensive network of local governing bodies and the pressing need for efficient waste management, a centralized asset management platform offers:
-                </p>
-                <div className="grid gap-6">
-                  {whyImplement.map((item) => (
-                    <Card key={item.title} className="transition-all hover:shadow-md">
-                      <CardHeader>
-                        <CardTitle className="text-xl">{item.title}</CardTitle>
-                        <CardDescription>{item.description}</CardDescription>
-                      </CardHeader>
-                    </Card>
-                  ))}
-                </div>
+            {/* Why Implement Section */}
+            <div>
+              <h2 className="text-3xl font-bold mb-4">Why Implement an Asset Management Platform?</h2>
+              <p className="text-muted-foreground mb-8">
+                Given the extensive network of local governing bodies and the pressing need for efficient waste management, a centralized asset management platform offers:
+              </p>
+              <div className="grid gap-6">
+                {whyImplement.map((item) => (
+                  <Card key={item.title} className="transition-all hover:shadow-md">
+                    <CardHeader>
+                      <CardTitle className="text-xl">{item.title}</CardTitle>
+                      <CardDescription>{item.description}</CardDescription>
+                    </CardHeader>
+                  </Card>
+                ))}
               </div>
             </div>
 
