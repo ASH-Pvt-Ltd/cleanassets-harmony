@@ -6,7 +6,6 @@ import DashboardLayout from '@/components/dashboard/DashboardLayout';
 import GovernmentDashboard from '@/components/dashboard/GovernmentDashboard';
 import MunicipalityDashboard from '@/components/dashboard/MunicipalityDashboard';
 import VerificationDashboard from '@/components/dashboard/VerificationDashboard';
-import { Truck } from 'lucide-react';
 
 const Dashboard = () => {
   const { user, isLoading } = useAuth();
@@ -60,13 +59,10 @@ const Dashboard = () => {
       }>
         <div className="space-y-8">
           <div className="space-y-2">
-            <div className="flex items-center gap-3">
-              <Truck className="h-8 w-8 text-primary" />
-              <h2 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
-                {getDashboardTitle()}
-              </h2>
-            </div>
-            <p className="text-muted-foreground pl-11">
+            <h2 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+              {getDashboardTitle()}
+            </h2>
+            <p className="text-muted-foreground">
               {user.role === 'government' 
                 ? 'Centralized Waste Management Asset Overview'
                 : `Here's an overview of your ${user.role} dashboard`}

@@ -9,7 +9,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { User, LogOut } from 'lucide-react';
+import { User, LogOut, Truck } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const DashboardHeader = () => {
@@ -28,7 +28,11 @@ const DashboardHeader = () => {
 
   return (
     <header className="border-b bg-white px-6 py-3">
-      <div className="flex items-center justify-end">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Truck className="h-6 w-6 text-primary" />
+          <span className="text-lg font-semibold">Swachh Goa</span>
+        </div>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="flex items-center gap-2">
