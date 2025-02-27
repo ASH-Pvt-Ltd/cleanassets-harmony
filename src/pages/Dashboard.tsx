@@ -47,10 +47,12 @@ const Dashboard = () => {
         <div className="space-y-8">
           <div className="space-y-2">
             <h2 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
-              Welcome back, {user.name}
+              {user.role === 'government' ? 'Government of Goa Dashboard' : `Welcome, ${user.name}`}
             </h2>
             <p className="text-muted-foreground">
-              Here's an overview of your {user.role} dashboard
+              {user.role === 'government' 
+                ? 'Centralized Waste Management Asset Overview'
+                : `Here's an overview of your ${user.role} dashboard`}
             </p>
           </div>
           <div className="relative">
