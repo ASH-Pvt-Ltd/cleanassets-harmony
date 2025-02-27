@@ -23,7 +23,8 @@ const WhyImplementSection = () => {
     <section className="py-20 bg-secondary/30">
       <div className="container px-4">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-          <div>
+          {/* Why Implement Section */}
+          <div className="space-y-6">
             <h2 className="text-3xl font-bold mb-4">Why Implement an Asset Management Platform?</h2>
             <p className="text-muted-foreground mb-8">
               Given the extensive network of local governing bodies and the pressing need for efficient waste management, a centralized asset management platform offers:
@@ -40,16 +41,17 @@ const WhyImplementSection = () => {
             </div>
           </div>
 
-          <div className="lg:sticky lg:top-24 space-y-6">
-            <div>
-              <h2 className="text-3xl font-bold mb-4">Asset Distribution Map</h2>
+          {/* Map Section */}
+          <div className="lg:sticky lg:top-24">
+            <div className="space-y-4 mb-6">
+              <h2 className="text-3xl font-bold">Asset Distribution Map</h2>
               <p className="text-muted-foreground">
                 Explore waste management assets across Goa
               </p>
             </div>
             <Card className="transition-all hover:shadow-xl hover:scale-[1.02] duration-300">
               <CardContent className="p-0">
-                <div className="h-[800px] rounded-lg overflow-hidden">
+                <div className="h-[600px] lg:h-[500px] rounded-lg overflow-hidden">
                   <Map />
                 </div>
               </CardContent>

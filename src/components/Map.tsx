@@ -92,7 +92,7 @@ const Map = () => {
     };
   }, []);
 
-  return <div ref={mapContainer} className="h-[500px] rounded-lg shadow-lg" />;
+  return <div ref={mapContainer} className="w-full h-full" />;
 };
 
 export default Map;
