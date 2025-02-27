@@ -63,8 +63,13 @@ const DashboardSidebar = () => {
   return (
     <Sidebar className="border-r bg-white">
       <SidebarHeader className="p-4 border-b">
-        <h2 className="text-lg font-semibold">SwachhGoa</h2>
-        <p className="text-sm text-muted-foreground">{user?.role} Portal</p>
+        <div className="flex items-center gap-2">
+          <Truck className="h-6 w-6 text-primary" />
+          <div>
+            <h2 className="text-lg font-semibold">SwachhGoa</h2>
+            <p className="text-sm text-muted-foreground">{user?.role} Portal</p>
+          </div>
+        </div>
       </SidebarHeader>
       <SidebarContent>
         <nav className="space-y-1 p-2">
