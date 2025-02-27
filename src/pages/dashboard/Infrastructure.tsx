@@ -1,4 +1,3 @@
-
 import React from 'react';
 import DashboardLayout from '@/components/dashboard/DashboardLayout';
 import Map from '@/components/Map';
@@ -18,6 +17,7 @@ import {
   Filter
 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
+import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, LineChart, Line, PieChart, Pie, Cell } from 'recharts';
 
 const Infrastructure = () => {
   const facilities = [
@@ -55,6 +55,32 @@ const Infrastructure = () => {
     };
     return styles[status as keyof typeof styles];
   };
+
+  const capacityData = [
+    { month: 'Jan', planned: 180, actual: 150 },
+    { month: 'Feb', planned: 180, actual: 165 },
+    { month: 'Mar', planned: 180, actual: 175 },
+    { month: 'Apr', planned: 180, actual: 155 },
+    { month: 'May', planned: 180, actual: 170 },
+    { month: 'Jun', planned: 180, actual: 178 },
+  ];
+
+  const operationalMetrics = [
+    { name: 'Operational', value: 18 },
+    { name: 'Maintenance', value: 4 },
+    { name: 'Offline', value: 2 },
+  ];
+
+  const monthlyWaste = [
+    { date: '2024-01', organic: 85, recyclable: 45, hazardous: 20 },
+    { date: '2024-02', organic: 88, recyclable: 42, hazardous: 18 },
+    { date: '2024-03', organic: 90, recyclable: 48, hazardous: 22 },
+    { date: '2024-04', organic: 92, recyclable: 50, hazardous: 19 },
+    { date: '2024-05', organic: 87, recyclable: 46, hazardous: 21 },
+    { date: '2024-06', organic: 91, recyclable: 49, hazardous: 20 },
+  ];
+
+  const COLORS = ['#22c55e', '#eab308', '#ef4444'];
 
   return (
     <DashboardLayout>
@@ -213,19 +239,95 @@ const Infrastructure = () => {
               <Card>
                 <CardHeader>
                   <CardTitle>Capacity Utilization</CardTitle>
-                  <CardDescription>Monthly processing capacity usage</CardDescription>
+                  <CardDescription>Monthly processing capacity usage (tonnes/day)</CardDescription>
                 </CardHeader>
-                <CardContent className="h-[300px] flex items-center justify-center">
-                  <p className="text-muted-foreground">Capacity utilization chart will be displayed here</p>
+                <CardContent>
+                  <div className="h-[300px]">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <LineChart data={capacityData}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="month" />
+                        <YAxis />
+                        <Tooltip />
+                        <Line 
+                          type="monotone" 
+                          dataKey="planned" 
+                          stroke="#8884d8" 
+                          name="Planned Capacity"
+                        />
+                        <Line 
+                          type="monotone" 
+                          dataKey="actual" 
+                          stroke="#82ca9d" 
+                          name="Actual Usage"
+                        />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
                 </CardContent>
               </Card>
+
               <Card>
                 <CardHeader>
-                  <CardTitle>Operational Metrics</CardTitle>
-                  <CardDescription>Key performance indicators</CardDescription>
+                  <CardTitle>Facility Status Distribution</CardTitle>
+                  <CardDescription>Current operational status of facilities</CardDescription>
                 </CardHeader>
-                <CardContent className="h-[300px] flex items-center justify-center">
-                  <p className="text-muted-foreground">Operational metrics chart will be displayed here</p>
+                <CardContent>
+                  <div className="h-[300px]">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie
+                          data={operationalMetrics}
+                          cx="50%"
+                          cy="50%"
+                          innerRadius={60}
+                          outerRadius={80}
+                          paddingAngle={5}
+                          dataKey="value"
+                        >
+                          {operationalMetrics.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                          ))}
+                        </Pie>
+                        <Tooltip />
+                      </PieChart>
+                    </ResponsiveContainer>
+                    <div className="flex justify-center gap-4 mt-4">
+                      {operationalMetrics.map((entry, index) => (
+                        <div key={entry.name} className="flex items-center gap-2">
+                          <div 
+                            className="w-3 h-3 rounded-full" 
+                            style={{ backgroundColor: COLORS[index] }} 
+                          />
+                          <span className="text-sm text-muted-foreground">
+                            {entry.name} ({entry.value})
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="md:col-span-2">
+                <CardHeader>
+                  <CardTitle>Waste Type Distribution</CardTitle>
+                  <CardDescription>Monthly breakdown by waste category (tonnes)</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="h-[300px]">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart data={monthlyWaste}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="date" />
+                        <YAxis />
+                        <Tooltip />
+                        <Bar dataKey="organic" fill="#22c55e" name="Organic Waste" />
+                        <Bar dataKey="recyclable" fill="#3b82f6" name="Recyclable" />
+                        <Bar dataKey="hazardous" fill="#ef4444" name="Hazardous" />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
                 </CardContent>
               </Card>
             </div>
